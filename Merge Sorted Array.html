@@ -1,0 +1,218 @@
+<pre>
+    <code>
+        You are given two integer arrays nums1 and nums2, sorted in non-decreasing order, and two integers m and n, 
+        representing the number of elements in nums1 and nums2 respectively.
+
+        Merge nums1 and nums2 into a single array sorted in non-decreasing order.
+
+        The final sorted array should not be returned by the function, but instead be stored inside the array nums1. 
+        To accommodate this, nums1 has a length of m + n, where the first m elements denote the elements that should be merged, 
+        and the last n elements are set to 0 and should be ignored. nums2 has a length of n.
+
+ 
+
+        Example 1:
+
+        Input: nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
+        Output: [1,2,2,3,5,6]
+        Explanation: The arrays we are merging are [1,2,3] and [2,5,6].
+        The result of the merge is [1,2,2,3,5,6] with the underlined elements coming from nums1.
+        Example 2:
+
+        Input: nums1 = [1], m = 1, nums2 = [], n = 0
+        Output: [1]
+        Explanation: The arrays we are merging are [1] and [].
+        The result of the merge is [1].
+        Example 3:
+
+        Input: nums1 = [0], m = 0, nums2 = [1], n = 1
+        Output: [1]
+        Explanation: The arrays we are merging are [] and [1].
+        The result of the merge is [1].
+        Note that because m = 0, there are no elements in nums1. The 0 is only there to ensure the merge result can fit in nums1.
+ 
+
+        Constraints:
+
+        nums1.length == m + n
+        nums2.length == n
+        0 <= m, n <= 200
+        1 <= m + n <= 200
+        -109 <= nums1[i], nums2[j] <= 109
+        
+
+        Follow up: Can you come up with an algorithm that runs in O(m + n) time?
+    </code>
+</pre>
+<strong> Solution with Explanation:</strong>
+<pre>
+    <code>
+        var merge = function(nums1, m, nums2, n) {
+            let i = m - 1; // Pointer for the last element in the "real" part of nums1
+            let j = n - 1; // Pointer for the last element in nums2
+            let k = m + n - 1; // Pointer for the last position in nums1
+            
+            // Merge the arrays from the back to the front
+            while (i >= 0 && j >= 0) {
+                if (nums1[i] > nums2[j]) {
+                    nums1[k] = nums1[i];
+                    i--;
+                } else {
+                    nums1[k] = nums2[j];
+                    j--;
+                }
+                k--;
+            }
+            
+            // If there are remaining elements in nums2, copy them over
+            while (j >= 0) {
+                nums1[k] = nums2[j];
+                j--;
+                k--;
+            }
+            
+            // No need to handle the remaining elements in nums1, as they are already in place
+        };
+        
+    </code>
+</pre>
+
+<strong>Explanation: --- ></strong>
+<pre>
+    <code>
+        The Expected Approach:
+        The goal is to merge two sorted arrays (nums1 and nums2) into nums1 in-place, with nums1 having enough space to hold the result.
+
+        You need to:
+
+        Use two pointers: One for nums1 and one for nums2, and iterate through the arrays from the back to avoid 
+                          overwriting elements in nums1 that are yet to be merged.
+        Modify nums1 in-place: Avoid creating new arrays (using methods like concat() or slice()), and instead update nums1 directly.
+
+        How It Works:
+        Pointers Initialization:
+
+        i points to the last valid element of nums1 (m - 1).
+        j points to the last element of nums2 (n - 1).
+        k points to the last index of nums1 (which is m + n - 1).
+        Merging:
+
+        We compare nums1[i] with nums2[j] and place the larger element at nums1[k].
+        Then, move the corresponding pointer (i, j, or k) accordingly.
+        Handle Remaining Elements in nums2:
+
+        Once we exhaust one array, if there are remaining elements in nums2, we copy them to nums1.
+        No Need to Handle nums1:
+
+        If there are remaining elements in nums1, they are already in the correct place, so no further action is required.
+        Example Walkthrough:
+
+        nums1 = [1, 2, 3, 0, 0, 0], m = 3, nums2 = [2, 5, 6], n = 3
+
+        nums1 has 3 elements ([1, 2, 3]), followed by 3 empty spaces (represented by 0s) to accommodate elements from nums2.
+        nums2 contains 3 elements ([2, 5, 6]).
+
+        We need to merge nums2 into nums1, maintaining the sorted order.
+
+        We'll merge the arrays from the end to avoid overwriting elements in nums1 that haven't been merged yet. We use three pointers:
+
+        i points to the last valid element in nums1 (index m-1).
+        j points to the last element in nums2 (index n-1).
+        k points to the last position in nums1 (index m + n - 1).
+
+        Steps:
+        Compare the elements at nums1[i] and nums2[j]. The larger one goes into nums1[k]. Then, move the corresponding pointer (i, j, or k).
+        When one array is exhausted, the remaining elements in the other array are already sorted, so we copy them directly.
+
+        Initial Setup:
+        nums1 = [1, 2, 3, 0, 0, 0], m = 3, nums2 = [2, 5, 6], n = 3
+        Pointers:
+        i = 2 (points to nums1[2] which is 3)
+        j = 2 (points to nums2[2] which is 6)
+        k = 5 (points to nums1[5], the last position)
+
+        Merge Process:
+        Step 1: Compare nums1[2] (3) and nums2[2] (6):
+
+        Since 6 > 3, place 6 in nums1[5].
+        Now, nums1 = [1, 2, 3, 0, 0, 6].
+        Decrement the pointers: i = 2, j = 1, k = 4.
+        Step 2: Compare nums1[2] (3) and nums2[1] (5):
+
+        Since 5 > 3, place 5 in nums1[4].
+        Now, nums1 = [1, 2, 3, 0, 5, 6].
+        Decrement the pointers: i = 2, j = 0, k = 3.
+        Step 3: Compare nums1[2] (3) and nums2[0] (2):
+
+        Since 3 > 2, place 3 in nums1[3].
+        Now, nums1 = [1, 2, 3, 3, 5, 6].
+        Decrement the pointers: i = 1, j = 0, k = 2.
+        Step 4: Compare nums1[1] (2) and nums2[0] (2):
+
+        Since 2 == 2, place 2 in nums1[2].
+        Now, nums1 = [1, 2, 2, 3, 5, 6].
+        Decrement the pointers: i = 0, j = -1, k = 1.
+
+        Final State:
+        Now j = -1, which means we've exhausted all elements in nums2.
+        No elements remain in nums2, so no further action is needed.
+
+        Key Points:
+        Merging from the back: By starting at the end of the arrays (nums1 and nums2), we avoid overwriting unmerged elements in nums1. We fill nums1 starting from the last position, where we have empty space to accommodate new elements.
+        Pointer management:
+        i tracks the last valid element of nums1.
+        j tracks the last element of nums2.
+        k keeps track of the last position of nums1, where we insert the largest element at each step.
+        Efficiency: The algorithm runs in O(m + n) time, where m and n are the lengths of nums1 and nums2 respectively, because each element of nums1 and nums2 is visited once.
+    </code>
+</pre>
+<hr />
+<pre>
+    <code>
+        Example Walkthrough with Another Test Case:
+        nums1 = [0], m = 0, nums2 = [1], n = 1
+
+        Initialization:
+        nums1 = [0], m = 0, nums2 = [1], n = 1
+
+        Pointers:
+        i = -1 (there are no valid elements in nums1).
+        j = 0 (points to nums2[0], which is 1).
+        k = 0 (points to nums1[0]).
+
+        Merge Process:
+        nums1 has no valid elements (m = 0), so we just copy nums2[0] into nums1[0].
+        After the operation, nums1 = [1].
+
+        This is a simpler case, but the logic still applies: if nums1 is initially empty (m = 0), we simply copy all elements of nums2 into nums1.
+    </code>
+</pre>
+<hr />
+<pre>
+    <code>
+        Conclusion:
+        
+        The two-pointer technique allows us to efficiently merge two sorted arrays in-place by comparing elements 
+        from the end of the arrays and placing the larger element in the correct position. This approach ensures 
+        we don't overwrite any elements and that the time complexity remains linear at O(m + n).
+    </code>
+</pre>
+<hr />
+<pre style="color: blue">
+    <code>
+        Time Complexity:
+
+        Time Complexity is O(m + n) because we are iterating over both arrays (nums1 and nums2) exactly once.
+        m is the number of elements in nums1 (excluding the zeros), and n is the number of elements in nums2.
+        Since we are comparing and inserting elements in nums1 one by one, the total work done is proportional to the sum of the lengths of both arrays. 
+        Hence, the time complexity is O(m + n).
+
+        -----------------------------------------------------------------------------------------------------------------------------------------------
+        Space Complexity:
+
+        Space Complexity is O(1) (constant space), because we are modifying nums1 in-place.
+        We are not using any extra arrays or data structures that grow with the input size. 
+        The only space used is for a few pointers (i, j, and k), which are fixed in number and do not depend on the size of the input arrays.
+        Therefore, the space complexity is constant, O(1).
+    </code>
+</pre>
