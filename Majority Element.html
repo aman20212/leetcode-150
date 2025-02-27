@@ -1,0 +1,110 @@
+<h2>Majority Element</h2>
+<pre>
+    <code>
+        Given an array nums of size n, return the majority element.
+
+        The majority element is the element that appears more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.
+
+        Example 1:
+
+        Input: nums = [3,2,3]
+        Output: 3
+        Example 2:
+
+        Input: nums = [2,2,1,1,1,2,2]
+        Output: 2
+        
+
+        Constraints:
+
+        n == nums.length
+        1 <= n <= 5 * 104
+        -109 <= nums[i] <= 109
+    </code>
+</pre>
+
+<h3>Solution by Aman:</h3>
+<pre>
+    <code>
+        var majorityElement = function(nums) {
+            let j = 1;
+            let i = 0;
+            while (i < nums.length && j < nums.length) {
+                if (nums[i] === nums[j] && j === nums.length - 1){
+                   return nums[nums.length - 1];
+                }
+               j++;
+            } 
+         };
+    </code>
+    This worked, but was not a efficient solution.
+</pre>
+
+<h3>Boyer-Moore Voting Algorithm</h3>
+<pre style="color: blue; font-style: bold">
+        <code>
+            This algorithm efficiently finds the majority element in an array with linear time complexity O(n) and constant space complexity.
+
+            ALGORITHM:
+            Here’s the basic idea of the Boyer-Moore Voting Algorithm:
+
+            Initialize two variables: candidate and count. Set candidate to any element of the array and count to 1.
+            Iterate through the array:
+            If the current element is equal to the candidate, increment the count.
+            If the current element is different from the candidate, decrement the count.
+            If the count becomes 0, update the candidate to the current element and set count to 1.
+            After iterating through the array, the candidate will be the potential majority element.
+
+            Here’s the Leet Code Problem of the Boyer-Moore Voting Algorithm:
+
+            169. Majority Element
+
+            Given an array nums of size n, return the majority element.
+
+            The majority element is the element that appears more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.
+
+            Example 1:
+
+            Input: nums = [3,2,3]
+            Output: 3
+        </code>
+    </pre>
+<pre style="color: red">
+        <code>
+            var majorityElement = function(nums) {
+                let candidate = nums[0];
+                let count = 1;  // We start with the first element, count 1.
+            
+                // Loop through the rest of the array
+                for (let i = 1; i < nums.length; i++) {
+                    if (nums[i] === candidate) {
+                        count++;  // Same as the candidate, increment the count
+                    } else {
+                        count--;  // Different, decrement the count
+                    }
+            
+                    if (count === 0) {
+                        candidate = nums[i];  // If count reaches 0, pick the current element as the new candidate
+                        count = 1;  // Reset count to 1 for the new candidate
+                    }
+                }
+            
+                // Since the problem guarantees a majority element exists, we return the candidate
+                return candidate;
+            };
+
+            Explanation:
+
+            Initialization: We start with the first element as the candidate and set its count to 1.
+            Loop through array: We iterate through the array starting from the second element:
+                If the current element matches the candidate, we increment the count.
+                If the current element is different, we decrement the count.
+                If the count drops to zero, it means the current candidate no longer has the majority, so we select the current element as the new candidate and reset the count to 1.
+            Return the candidate: Since the problem guarantees that a majority element exists, at the end of the loop, the candidate will be the majority element.
+
+
+            Time and Space Complexity:
+                Time Complexity: O(n) because we are iterating through the array exactly once.
+                Space Complexity: O(1) since we're only using a fixed amount of extra space (a couple of variables for the candidate and count).
+        </code>
+    </pre>
