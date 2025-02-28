@@ -1,0 +1,219 @@
+<h2>Rotate Array</h2>
+<pre style="color: blue">
+    <code>
+        Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.
+
+        Example 1:
+
+        Input: nums = [1,2,3,4,5,6,7], k = 3
+        Output: [5,6,7,1,2,3,4]
+        Explanation:
+        rotate 1 steps to the right: [7,1,2,3,4,5,6]
+        rotate 2 steps to the right: [6,7,1,2,3,4,5]
+        rotate 3 steps to the right: [5,6,7,1,2,3,4]
+
+
+        Example 2:
+
+        Input: nums = [-1,-100,3,99], k = 2
+        Output: [3,99,-1,-100]
+        Explanation: 
+        rotate 1 steps to the right: [99,-1,-100,3]
+        rotate 2 steps to the right: [3,99,-1,-100]
+    </code>
+</pre>
+<h4>Solution: Aman</h4>
+<pre style="color: brown; font-weight: bold">
+    <code>
+        var rotate = function(nums, k) {
+            let k1 = nums.slice(-k).concat(nums.slice(0, nums.length - k));
+            for (let i = 0; i < nums.length; i++) {
+                    nums[i] = k1[i];
+            }
+        };
+    </code>
+</pre>
+<h3>Solution Chatgpt</h3>
+<pre>
+    <code>
+        var rotate = function(nums, k) {
+            // Handle edge case where k is greater than the length of the array
+            k = k % nums.length;
+            
+            // If no rotation is needed, simply return the original array
+            if (k === 0) return nums;
+            
+            // Slice the array into two parts and concatenate
+            let rotated = nums.slice(-k).concat(nums.slice(0, nums.length - k));
+            
+            // Copy the rotated array back into nums (in-place modification)
+            for (let i = 0; i < nums.length; i++) {
+                nums[i] = rotated[i];
+            }
+        };
+    </code>
+    <code style="color: cornflowerblue;">
+        Approach Explanation:
+
+        Understanding Rotation:
+        -----------------------
+
+        When you rotate the array to the right by k steps, the last k elements of the array will move to the front, and the rest will shift to the right.
+        Example:
+        Before rotation: [1, 2, 3, 4, 5]
+        Rotate by 2 steps: [4, 5, 1, 2, 3]
+
+        Efficient Solution:
+        -----------------------
+
+        Instead of moving elements one by one, we can break the task into two parts:
+        Extract the last k elements.
+        Extract the remaining elements (the first n - k elements).
+        Concatenate the last k elements with the remaining elements.
+
+        Handling Large k:
+        -----------------------
+
+        If k is larger than the array's length, rotating by k steps is the same as rotating by k % nums.length. This reduces unnecessary rotations.
+
+
+    </code>
+    <code style="color: red;">
+        Why k % nums.length Works
+        -------------------------------------------------------------------------------------------
+        
+        When you are asked to rotate an array to the right by k steps, you're essentially shifting each element k positions to the right. However, if k is larger than the array's length (nums.length), rotating the array k times is equivalent to rotating the array k % nums.length times.
+
+        Why does this happen?
+        Think of an array of length n. When you rotate it by n steps, you're essentially rotating it by the exact number of positions that the array's length is. But after n rotations, the array returns to its original configuration. This is because the elements of the array have all shifted back to where they started.
+
+        For example:
+
+        If you rotate an array of length 5 (say [1, 2, 3, 4, 5]) by 5 steps, the array returns to the same order: [1, 2, 3, 4, 5].
+        If you rotate it by 10 steps, this is the same as rotating it by 10 % 5 = 0 steps (no rotation), because after every 5 steps, you are back at the start.
+        Thus, rotating by a multiple of the array’s length has no effect.
+
+
+        More Examples:
+        --------------
+        Example 1: k is larger than nums.length
+        Let’s say we have:
+
+        
+        let nums = [1, 2, 3, 4, 5];
+        let k = 7;
+
+        The length of the array is nums.length = 5.
+        Rotating by k = 7 steps is equivalent to rotating by k % 5 = 7 % 5 = 2 steps.
+        Why? Because:
+
+        After 5 steps, you will have rotated the array once completely and will be back at the starting position.
+        The remaining 2 steps (because 7 - 5 = 2) are what matter for the final result.
+        So, rotating [1, 2, 3, 4, 5] by 7 steps is the same as rotating it by 2 steps:
+
+        nums.slice(-2) → [4, 5]
+        nums.slice(0, 3) → [1, 2, 3]
+        Concatenate them → [4, 5, 1, 2, 3]
+
+        --------------------------------------------------------------------------------------------------
+        Example 2: Another case where k is larger than nums.length
+        Let’s take an array with 3 elements:
+
+        
+        let nums = [10, 20, 30];
+        let k = 8;
+        The length of the array is nums.length = 3.
+        Rotating by k = 8 steps is equivalent to rotating by k % 3 = 8 % 3 = 2 steps.
+        So, rotating [10, 20, 30] by 8 steps is the same as rotating by 2 steps:
+
+        nums.slice(-2) → [20, 30]
+        nums.slice(0, 1) → [10]
+        Concatenate them → [20, 30, 10]
+    </code>
+    <code style="color: blue; font-weight: bold;">
+        Approach Explanation:
+        ---------------------
+            Understanding Rotation:
+
+            When you rotate the array to the right by k steps, the last k elements of the array will move to the front, and the rest will shift to the right.
+            Example:
+            Before rotation: [1, 2, 3, 4, 5]
+            Rotate by 2 steps: [4, 5, 1, 2, 3]
+
+
+            Efficient Solution:
+            ---------------------
+
+            Instead of moving elements one by one, we can break the task into two parts:
+            Extract the last k elements.
+            Extract the remaining elements (the first n - k elements).
+            Concatenate the last k elements with the remaining elements.
+
+
+            Handling Large k:
+            ------------------
+            If k is larger than the array's length, rotating by k steps is the same as rotating by k % nums.length. This reduces unnecessary rotations.
+    </code>
+</pre>
+<hr />
+<h3>Another Approach</h3>
+<pre>
+    <code>
+        Reverse-Based Approach
+        ----------------------
+        The idea is to reverse parts of the array to achieve the rotation:
+
+        Reverse the entire array.
+        Reverse the first k elements.
+        Reverse the remaining elements (i.e., the elements from index k to the end).
+
+
+        Steps:
+        -------
+        Reverse the entire array to move the last k elements to the front.
+        Reverse the first k elements to restore their original order.
+        Reverse the rest of the array (from k to the end) to restore their original order.
+
+
+        This solution works in-place and doesn't require extra space for a new array.
+
+        var rotate = function(nums, k) {
+            // Handle edge case where k is greater than the length of the array
+            k = k % nums.length;
+            
+            // Reverse the entire array
+            reverse(nums, 0, nums.length - 1);
+            
+            // Reverse the first k elements
+            reverse(nums, 0, k - 1);
+            
+            // Reverse the remaining elements
+            reverse(nums, k, nums.length - 1);
+        };
+        
+        // Helper function to reverse a part of the array
+        function reverse(nums, start, end) {
+            while (start < end) {
+                // Swap elements at start and end
+                let temp = nums[start];
+                nums[start] = nums[end];
+                nums[end] = temp;
+                
+                start++;
+                end--;
+            }
+        }
+        
+        // Example 1:
+        let nums1 = [1, 2, 3, 4, 5, 6, 7];
+        let k1 = 3;
+        rotate(nums1, k1);
+        console.log(nums1);  // Output: [5, 6, 7, 1, 2, 3, 4]
+        
+        // Example 2:
+        let nums2 = [-1, -100, 3, 99];
+        let k2 = 2;
+        rotate(nums2, k2);
+        console.log(nums2);  // Output: [3, 99, -1, -100]
+    </code>
+</pre>
