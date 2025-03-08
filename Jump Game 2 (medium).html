@@ -1,0 +1,84 @@
+<h2 style="color: red">Jump Game II</h2>
+<pre style="font-weight: bold; font-style: italic">
+    <code>
+        You are given a 0-indexed array of integers nums of length n. You are initially positioned at nums[0].
+
+        Each element nums[i] represents the maximum length of a forward jump from index i. In other words, if you are at nums[i], you can jump to any nums[i + j] where:
+
+        0 <= j <= nums[i] and
+        i + j < n
+        Return the minimum number of jumps to reach nums[n - 1]. The test cases are generated such that you can reach nums[n - 1].
+
+        
+
+        Example 1:
+
+        Input: nums = [2,3,1,1,4]
+        Output: 2
+        Explanation: The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
+        Example 2:
+
+        Input: nums = [2,3,0,1,4]
+        Output: 2
+    </code>
+</pre>
+<h3>Solution: Greedy Approach with Optimal Time and Space Complexity</h3>
+<pre>
+    <code>
+        Time Complexity:
+        O(n) — We only iterate through the array once, making it a linear time solution.
+        
+        Space Complexity:
+        O(1) — We only use a constant amount of extra space (for variables like jumps, currentEnd, and farthest).
+    </code>
+    <code style="color: red;">
+        class Solution {
+            jump(nums) {
+                let jumps = 0;
+                let currentEnd = 0;
+                let farthest = 0;
+                
+                for (let i = 0; i < nums.length - 1; i++) {
+                    // Update the farthest we can reach from current index
+                    farthest = Math.max(farthest, i + nums[i]);
+        
+                    // If we've reached the end of the current jump range
+                    if (i === currentEnd) {
+                        jumps++; // Make a jump
+                        currentEnd = farthest; // Extend the range to the farthest reachable point
+                        
+                        // If we've reached or exceeded the last index, no need to continue
+                        if (currentEnd >= nums.length - 1) {
+                            break;
+                        }
+                    }
+                }
+                
+                return jumps;
+            }
+        }
+        
+    </code>
+</pre>
+<hr />
+<h3>Explanation</h3>
+<pre>
+    <code>
+        Explanation:
+            Initialization:
+
+                jumps = 0 — We start with zero jumps.
+                currentEnd = 0 — We start at the first index.
+                farthest = 0 — We haven't moved, so we can reach index 0.
+
+
+            Loop through the array (from i = 0 to n - 2):
+
+                At each index i, we calculate the farthest index we can reach from i by doing: farthest = Math.max(farthest, i + nums[i]).
+                If i == currentEnd, it means we’ve reached the end of the current jump range and we need to make a jump to extend the range. So:
+                    Increment jumps by 1.
+                    Update currentEnd to the farthest index we can reach.
+                    If currentEnd has reached or passed the last index (nums.length - 1), we can stop early since we’ve reached the last index.
+            Exit the loop once we reach the last index or jump to it directly.
+    </code>
+</pre>
