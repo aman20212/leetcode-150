@@ -1,0 +1,137 @@
+<h2>Insert Delete GetRandom O(1)</h2>
+
+<pre style="color: red; font-style: italic">
+    <code>
+        Implement the RandomizedSet class:
+
+        RandomizedSet() Initializes the RandomizedSet object.
+        bool insert(int val) Inserts an item val into the set if not present. Returns true if the item was not present, false otherwise.
+        bool remove(int val) Removes an item val from the set if present. Returns true if the item was present, false otherwise.
+        int getRandom() Returns a random element from the current set of elements (it's guaranteed that at least one element exists when this method is called). Each element must have the same probability of being returned.
+        You must implement the functions of the class such that each function works in average O(1) time complexity.
+
+        
+
+        Example 1:
+
+        Input
+        ["RandomizedSet", "insert", "remove", "insert", "getRandom", "remove", "insert", "getRandom"]
+        [[], [1], [2], [2], [], [1], [2], []]
+        Output
+        [null, true, false, true, 2, true, false, 2]
+
+        Explanation
+        RandomizedSet randomizedSet = new RandomizedSet();
+        randomizedSet.insert(1); // Inserts 1 to the set. Returns true as 1 was inserted successfully.
+        randomizedSet.remove(2); // Returns false as 2 does not exist in the set.
+        randomizedSet.insert(2); // Inserts 2 to the set, returns true. Set now contains [1,2].
+        randomizedSet.getRandom(); // getRandom() should return either 1 or 2 randomly.
+        randomizedSet.remove(1); // Removes 1 from the set, returns true. Set now contains [2].
+        randomizedSet.insert(2); // 2 was already in the set, so return false.
+        randomizedSet.getRandom(); // Since 2 is the only number in the set, getRandom() will always return 2.
+    </code>
+</pre>
+<hr />
+<h4>Solution using Set</h4>
+<pre>
+    <code style="color: blue; font-style: italic;">
+        Only issue with using Set is, Set does not support accessing elements by index.
+        Thus we cannot achieve 0(1) as time complexity while accessing elements in random function.
+
+        
+        var RandomizedSet = function() {
+            this.set = new Set();
+        };
+
+        /** 
+        * @param {number} val
+        * @return {boolean}
+        */
+        RandomizedSet.prototype.insert = function(val) {
+            if(this.set.has(val)) return false
+            else{
+                this.set.add(val)
+                return true
+            }
+        };
+
+        /** 
+        * @param {number} val
+        * @return {boolean}
+        */
+        RandomizedSet.prototype.remove = function(val) {
+            return this.set.delete(val)
+        };
+
+        /**
+        * @return {number}
+        */
+        RandomizedSet.prototype.getRandom = function() {
+            let index = Math.floor(Math.random() * this.set.size)
+            let arr = [...this.set]
+            return arr[index]
+        };
+
+        /** 
+        * Your RandomizedSet object will be instantiated and called as such:
+        * var obj = new RandomizedSet()
+        * var param_1 = obj.insert(val)
+        * var param_2 = obj.remove(val)
+        * var param_3 = obj.getRandom()
+        */
+
+        There, we need to use a combination of Map and Array to allow constant-time random access.
+    </code>
+</pre>
+<hr />
+<pre>
+    <code>
+        var RandomizedSet = function() {
+            this.values = []; // Array to store elements
+            this.indexMap = new Map(); // Map to store element indices
+        };
+        
+        /** 
+         * @param {number} val
+         * @return {boolean}
+         */
+        RandomizedSet.prototype.insert = function(val) {
+            if (this.indexMap.has(val)) return false; // Element already exists
+            // Insert the value at the end of the array
+            this.indexMap.set(val, this.values.length); // Store its index in the map
+            this.values.push(val); // Add to array
+            return true;
+        };
+        
+        /** 
+         * @param {number} val
+         * @return {boolean}
+         */
+        RandomizedSet.prototype.remove = function(val) {
+            if (!this.indexMap.has(val)) return false; // Element does not exist
+            
+            // Get the index of the element to remove
+            const index = this.indexMap.get(val);
+            const lastVal = this.values[this.values.length - 1]; // Get the last value
+        
+            // Swap the element to be removed with the last element to ensure O(1) time complexity
+            this.values[index] = lastVal;
+            this.indexMap.set(lastVal, index); // Update the map with the new index of the last value
+        
+            // Remove the last element
+            this.values.pop();
+            this.indexMap.delete(val); // Remove the element from the map
+        
+            return true;
+        };
+        
+        /**
+         * @return {number}
+         */
+        RandomizedSet.prototype.getRandom = function() {
+            const randomIndex = Math.floor(Math.random() * this.values.length); // Random index
+            return this.values[randomIndex]; // Return the element at that index
+        };
+        
+    </code>
+</pre>
