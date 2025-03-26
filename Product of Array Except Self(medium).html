@@ -1,0 +1,140 @@
+<h2>Product of Array Except Self</h2>
+<pre>
+    <code>
+        Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
+
+        The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+
+        You must write an algorithm that runs in O(n) time and without using the division operation.
+
+ 
+
+        Example 1:
+
+        Input: nums = [1,2,3,4]
+        Output: [24,12,8,6]
+        Example 2:
+
+        Input: nums = [-1,1,0,-3,3]
+        Output: [0,0,9,0,0]
+    </code>
+</pre>
+<hr />
+<pre>
+    <code style="font-style: italic; font-weight: 600;">
+        The trick with this one, as is the case with many array-based problems, is to find a key insight about how the math works out at each position.
+
+        Consider the example input: [1,2,3,4]
+
+        And its output: [24,12,8,6]
+
+        Let's ignore the first index, since it'll end up being a special case. Look at input[1], which has a value of 2. The output we want is 12, which we can get with 1 * 3 * 4, all the elements except 2.
+
+        The key insight is that it's not just 1 * 3 * 4 that we want, but rather, we want product of all left elements * product of all right elements, which in this case is (1) * (3 * 4). If, for every index in the input array, we knew the product of all elements to its left, and the product of all elements to its right, we could determine the product of the array except itself - without having to use a division operation, as the problem asked us to.
+
+        Let's talk about the straightforward way to approach this, and then we can dig into the optimized space solution afterwards
+
+        Building Prefix and Suffix Arrays
+        We can solve this problem in linear time and space with three passes:
+
+        On the first pass, iterate through the array and create an array of prefixes, which give us the product of all left elements for each position
+        On the second pass, iterate through the array and create an array of suffixes, which give us the product of all right elements for each position
+        On the third pass, build a result array that contains the product of prefixes[i] * suffixes[i] for each position, and return this as our answer.
+        There are two special cases to consider:
+
+        The prefix value of the first element in the array should just be 1, since there are no values to the left of it.
+        The suffix value of the last element in the array should just be 1, since there are no values to the right of it.
+    </code>
+</pre>
+<hr />
+<h3>JavaScript Solution</h3>
+<pre>
+    <code style="color: red;">
+        var productExceptSelf = function(nums) {
+            const prefix = [];
+            for (let i = 0; i < nums.length; i++) {
+                if (i === 0) {
+                  prefix[i] = 1;
+              } else {
+                  prefix[i] = prefix[i-1] * nums[i-1];
+              }
+            }
+            // prefix will be [1,1,2,6]
+
+
+            const suffix = [];
+            for (let i = nums.length -1; i>=0; i--) {
+                if (i === nums.length - 1) {
+                  suffix[i] = 1;
+              } else {
+                  suffix[i] = suffix[i+1] * nums[i+1];
+              }
+            }
+            // suffix will be [24,12,4,1]
+            
+            const result = [];
+            for (let i = 0; i < nums.length; i++) {
+                nums[i] = prefix[i] * suffix[i];
+            }
+            return nums;
+        };
+        
+        console.log(productExceptSelf([1,2,3,4]));
+    </code>
+</pre>
+<hr />
+<pre>
+    <code>
+        Solving in Constant Space
+
+        
+        The follow-up asks us if we can identify a solution that just uses constant space.
+        Fortunately, the solution is the same - we just need to change the way we keep track of everything.
+        Instead of three arrays, we'll create one new array, and we'll do our forward pass and bckwards pass, 
+        keeping track of the prefix and suffix values as we go.
+
+        Here's what that looks like in JavaScript (with comments, to explain how we keep track of the prefix/suffix/final 
+        results):
+
+
+
+
+        /**
+        * @param {number[]} nums
+        * @return {number[]}
+        */
+        var productExceptSelf = function(nums) {
+            // Set up an empty array as our result
+            const result = []
+            
+            // Initialize a prefix tracker at 1
+            let prefix = 1
+            
+            // Loop through the input array - for each position,
+            // the result array should equal the prefix tracker.
+            
+            // Then, update the prefix tracker to be the product of itself,
+            // multiplied by the input value at the position.
+            for (let i=0; i<nums.length; i++) {
+                result[i] = prefix
+                prefix *= nums[i]
+            }
+            
+            // Initialize a suffix tracker at 1
+            let suffix = 1
+            
+            // Loop backwards through the array.
+            // For each iteration, set the result array to be 
+            // the product of itself multiplied by the suffix tracker.
+            
+            // Then, update the suffix tracker to be the product of itself,
+            // multiplied by the input value at that position.
+            for (let i=nums.length - 1; i>=0; i--) {
+                result[i] *= suffix
+                suffix *= nums[i]
+            }
+
+            return result
+        };
+    </code>
+</pre>
