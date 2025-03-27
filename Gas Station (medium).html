@@ -1,0 +1,107 @@
+<h2>Gas Station</h2>
+<pre>
+    <code>
+        There are n gas stations along a circular route, where the amount of gas at the ith station is gas[i].
+
+        You have a car with an unlimited gas tank and it costs cost[i] of gas to travel from the ith station to its next (i + 1)th station. You begin the journey with an empty tank at one of the gas stations.
+
+        Given two integer arrays gas and cost, return the starting gas station's index if you can travel around the circuit once in the clockwise direction, otherwise return -1. If there exists a solution, it is guaranteed to be unique.
+    </code>
+</pre>
+<hr />
+<pre>
+    <code>
+        Key Observations:
+        -----------------
+        - Total Gas vs Total Cost: If the total gas across all stations is less than the total cost of traveling the entire circuit, it's impossible to complete the circuit, because we can't travel the distance needed with insufficient gas.
+
+        - Greedy Approach: If at some point during the journey, the car runs out of gas (i.e., the gas in the tank becomes negative), we should abandon the current starting point and try the next station. We can restart the journey from the next station since the previous ones can't be the valid start anymore.
+
+        Approach:
+        ----------
+        - Traverse the stations and try to complete the circuit starting from an initial station.
+
+        - Keep track of the current gas in the tank as you move from one station to the next.
+
+        - If you run out of gas at any point, reset your journey to the next station.
+
+        - If the total gas collected is enough to cover the total cost, then the journey can be completed, and the starting station is the correct one.
+
+        - If not, return -1.
+
+        Algorithm:
+        ----------
+        - First, check if the total gas is enough to cover the total cost. If not, return -1.
+
+        - Then, use a greedy strategy to try different start positions. Start from station 0 and move to the next station.
+
+        - If the current tank goes negative, reset the start position to the next station and start again with a fresh tank.
+    </code>
+</pre>
+<h3>javascript solution</h3>
+<pre>
+    <code style="font-style: italic; color: red;">
+        function canCompleteCircuit(gas, cost) {
+            let totalGas = 0;
+            let totalCost = 0;
+            let currentGas = 0;
+            let start = 0;
+            
+            for (let i = 0; i < gas.length; i++) {
+                totalGas += gas[i];
+                totalCost += cost[i];
+                currentGas += gas[i] - cost[i];
+                
+                // If at any point, the current gas goes negative, reset the start
+                if (currentGas < 0) {
+                    start = i + 1; // Reset the start to the next station
+                    currentGas = 0; // Reset the gas in the tank
+                }
+            }
+            
+            // If total gas is less than total cost, return -1 (cannot complete the circuit)
+            return totalGas < totalCost ? -1 : start;
+        }
+        
+    </code>
+</pre>
+<hr />
+<pre>
+    <code style="font-style: italic; color: green;">
+        Time Complexity:
+        O(n) where n is the number of stations, since we only iterate through the arrays once.
+
+        Space Complexity:
+        O(1) as we use only a constant amount of extra space.
+
+        gas = [1, 2, 3, 4, 5];
+        cost = [3, 4, 5, 1, 2];
+
+        Total gas = 1 + 2 + 3 + 4 + 5 = 15
+        Total cost = 3 + 4 + 5 + 1 + 2 = 15
+
+        Here, total gas equals total cost, so we may have a valid solution.
+        Start at station 0. The gas left after each station is:
+        Station 0: 1 - 3 = -2 → reset start to 1.
+        Station 1: 2 - 4 = -2 → reset start to 2.
+        Station 2: 3 - 5 = -2 → reset start to 3.
+        Station 3: 4 - 1 = 3 → no problem now.
+        Station 4: 3 - 2 = 1 → enough gas to continue.
+        At station 3, we have enough gas to complete the full loop, so the result is 3.
+
+    </code>
+</pre>
+<hr />
+<pre>
+    <code>
+        gas = [2, 3, 4];
+        cost = [3, 4, 3];
+
+        Total gas = 2 + 3 + 4 = 9
+
+        Total cost = 3 + 4 + 3 = 10
+
+        Since total gas is less than total cost, we can't complete the circuit, so the output is -1.
+
+    </code>
+</pre>
