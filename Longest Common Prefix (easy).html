@@ -1,0 +1,72 @@
+<h2>Longest Common Prefix</h2>
+<pre>
+    <code>
+        Write a function to find the longest common prefix string amongst an array of strings.
+
+        If there is no common prefix, return an empty string "".
+
+        
+
+        Example 1:
+
+        Input: strs = ["flower","flow","flight"]
+        Output: "fl"
+        Example 2:
+
+        Input: strs = ["dog","racecar","car"]
+        Output: ""
+        Explanation: There is no common prefix among the input strings.
+    </code>
+</pre>
+<hr />
+<pre>
+    <code style="color: red; font-weight: 600;">
+        function longestCommonPrefix(strs) {
+
+            if (strs.length === 0) return "";  // Handle the case where the array is empty
+            
+            // Start by assuming the first string is the common prefix
+            let prefix = strs[0];
+            
+            // Compare this prefix with each subsequent string in the array
+            for (let i = 1; i < strs.length; i++) {
+
+                // Update the prefix to the common part of the current prefix and the string
+                while (strs[i].indexOf(prefix) !== 0) {
+
+                    // Shorten the prefix by one character from the end
+                    prefix = prefix.substring(0, prefix.length - 1);
+
+                    // If no common prefix, return empty string
+                    if (prefix === "") return "";
+                }
+            }
+            
+            return prefix;  // The longest common prefix
+        }
+        
+    </code>
+    <code style="color: blue; font-weight: 500;">
+        Optimal Solution Approach:
+        --------------------------
+        Horizontal scanning: We can start by comparing the prefix of the first string with the second string, 
+        then use the result to compare with the third string, and so on.
+
+        Time complexity: This solution works in O(N * M) time, where N is the number of strings in the array 
+        and M is the length of the longest string.
+
+        This is because we compare the current prefix with each string until the common prefix is reduced.
+
+        Explanation:
+        ------------
+        Initial Setup: The first string strs[0] is assumed to be the longest common prefix.
+
+        Iterate through each string: We loop through the strings starting from the second string. For each string:
+
+        If the current string does not start with the prefix, shorten the prefix by one character (using substring()), until a common prefix is found or the prefix becomes an empty string.
+
+        Early termination: If at any point the prefix becomes an empty string, we return an empty string, as no common prefix exists.
+
+        Return the result: Once the loop finishes, the prefix will contain the longest common prefix for all strings in the array.
+    </code>
+</pre>
