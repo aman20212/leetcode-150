@@ -1,0 +1,49 @@
+<h2>Reverse Words in a String</h2>
+<pre>
+    <code>
+        Given an input string s, reverse the order of the words.
+
+        A word is defined as a sequence of non-space characters. The words in s will be separated by at least one space.
+
+        Return a string of the words in reverse order concatenated by a single space.
+
+        Note that s may contain leading or trailing spaces or multiple spaces between two words. The returned string should only have a single space separating the words. Do not include any extra spaces.
+
+        
+
+        Example 1:
+
+        Input: s = "the sky is blue"
+        Output: "blue is sky the"
+        Example 2:
+
+        Input: s = "  hello world  "
+        Output: "world hello"
+        Explanation: Your reversed string should not contain leading or trailing spaces.
+        Example 3:
+
+        Input: s = "a good   example"
+        Output: "example good a"
+        Explanation: You need to reduce multiple spaces between two words to a single space in the reversed string.
+    </code>
+    <code style="color: red; font-weight: 600;">
+        var reverseWords = function(s) {
+            let s1 = s.split(" ").reverse();
+            let newStr = '';
+            for (let str of s1) {
+                if (str !== '') {
+                  newStr += str + ' ';
+              } else {
+                  continue;
+              }
+            }
+            return newStr.trim();
+        };
+    </code>
+    <code style="font-weight: 600; color: blue;">
+        var reverseWords = function(s) {
+            let s1 = s.trim().split(/\s+/).reverse().join(" ");
+            return s1;
+        };
+    </code>
+</pre>
