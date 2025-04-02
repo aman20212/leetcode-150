@@ -1,0 +1,127 @@
+<h2>Zigzag Conversion</h2>
+<pre>
+    <code style="color: red; font-weight: 400;">
+        The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
+
+        P   A   H   N
+        A P L S I I G
+        Y   I   R
+        And then read line by line: "PAHNAPLSIIGYIR"
+
+        Write the code that will take a string and make this conversion given a number of rows:
+
+        string convert(string s, int numRows);
+        
+
+        Example 1:
+
+        Input: s = "PAYPALISHIRING", numRows = 3
+        Output: "PAHNAPLSIIGYIR"
+        Example 2:
+
+        Input: s = "PAYPALISHIRING", numRows = 4
+        Output: "PINALSIGYAHRPI"
+        Explanation:
+        P     I    N
+        A   L S  I G
+        Y A   H R
+        P     I
+        Example 3:
+
+        Input: s = "A", numRows = 1
+        Output: "A"
+    </code>
+    <code style="color: maroon; font-weight: 700;">
+        /**
+        * @param {string} s
+        * @param {number} numRows
+        * @return {string}
+        */
+        var convert = function(s, numRows) {
+            if (numRows === 1 || numRows >= s.length) {
+                return s;
+            }
+
+            const rows = Array(numRows).fill('');
+            let currentRow = 0;
+            let goingDown = true;
+
+            for (let char of s) {
+                rows[currentRow] += char;
+                if (currentRow === 0) {
+                    goingDown = true;
+                } else if (currentRow === numRows - 1) {
+                    goingDown = false;
+                }
+
+                currentRow += goingDown ? 1 : -1;
+            }
+
+            return rows.join('');
+        };
+    </code>
+    <code style="color: orangered;">
+        The core idea is to simulate the zigzag pattern by iterating through the string and placing each character into the correct row.
+
+        Initialization:
+        --------------
+
+        Create an array rows to store the characters for each row.
+        Initialize currentRow to 0 (the first row).
+        Initialize goingDown to true (we start moving down).
+
+        Iteration:
+        ----------
+
+        Iterate through each character char in the input string s.
+        Append char to the rows[currentRow] string.
+
+        Direction Change:
+        -----------------
+        If currentRow is 0 (top row), set goingDown to true.
+        If currentRow is numRows - 1 (bottom row), set goingDown to false.
+        Update currentRow based on the goingDown direction:
+        If goingDown is true, increment currentRow.
+        If goingDown is false, decrement currentRow.
+
+
+        Result:
+        -------
+
+        Join the strings in the rows array to get the final zigzag string.
+        Example with s = "PAYPALISHIRING" and numRows = 4:
+
+        Figure 1: Initialization
+
+        rows = ["", "", "", ""]
+        currentRow = 0
+        goingDown = true
+        Figure 2: Iteration
+
+        char	currentRow	goingDown	rows
+        P	0	true	["P", "", "", ""]
+        A	1	true	["P", "A", "", ""]
+        Y	2	true	["P", "A", "Y", ""]
+        P	3	false	["P", "A", "Y", "P"]
+        A	2	false	["P", "A", "YA", "P"]
+        L	1	false	["P", "AL", "YA", "P"]
+        I	0	true	["PI", "AL", "YA", "P"]
+        S	1	true	["PI", "ALS", "YA", "P"]
+        H	2	true	["PI", "ALS", "YAH", "P"]
+        I	3	false	["PI", "ALS", "YAH", "PI"]
+        R	2	false	["PI", "ALS", "YAHR", "PI"]
+        I	1	false	["PI", "ALSIG", "YAHR", "PI"]
+        N	0	true	["PIN", "ALSIG", "YAHR", "PI"]
+        G	1	true	["PIN", "ALSIG", "YAHR", "PI"]
+
+        rows.join('') = "PINALSIGYAHRPI"
+
+
+        Key Points:
+        -----------
+
+        The goingDown variable controls the direction of movement between rows.
+        The currentRow variable tracks the current row being filled.
+        The edge cases where numRows is 1, or numRows is greater than or equal to the strings length are handled at the beginning of the function.
+    </code>
+</pre>
