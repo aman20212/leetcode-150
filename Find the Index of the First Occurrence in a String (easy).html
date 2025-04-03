@@ -1,0 +1,57 @@
+<h2>Find the Index of the First Occurrence in a String</h2>
+<pre>
+    <code>
+        Given two strings needle and haystack, return the index of the first occurrence of needle in haystack,
+        or -1 if needle is not part of haystack.
+
+ 
+
+        Example 1:
+
+        Input: haystack = "sadbutsad", needle = "sad"
+        Output: 0
+        Explanation: "sad" occurs at index 0 and 6.
+        The first occurrence is at index 0, so we return 0.
+
+
+        Example 2:
+
+        Input: haystack = "leetcode", needle = "leeto"
+        Output: -1
+        Explanation: "leeto" did not occur in "leetcode", so we return -1.
+    </code>
+</pre>
+<pre>
+    <code style="color: red;">
+        var strStr = function(haystack, needle) {
+            return haystack.indexOf(needle);
+        };
+
+        --------------------------------------------
+        Solution #4 - Brute Force Substring Search
+
+        Create a loop to iterate through the haystack and compare the substrings of the haystack and needle 
+        using the substr() function.
+        Return the index position of the needle or -1 if not found.
+
+        /**
+        * Solution #4 - Loop through haystack and compare substrings - Time: O(N), Space: O(1)
+        * Loop through the haystack. For each character, loop through the needle and compare.
+        * If they are all equal, return the index of the haystack
+        *
+        * @param {string} haystack
+        * @param {string} needle
+        * @return {number}
+        */
+        var strStr = function (haystack, needle) {
+            let haystackLength = haystack.length;
+            let needleLength = needle.length;
+            if (haystackLength < needleLength) return -1;
+
+            for (let i = 0; i <= haystackLength - needleLength; i++) {
+                if (haystack.substr(i, needleLength) === needle) return i;
+            }
+            return -1;
+        };
+    </code>
+</pre>
