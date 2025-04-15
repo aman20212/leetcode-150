@@ -1,0 +1,72 @@
+<h2>Valid Palindrome</h2>
+<pre>
+    A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters,
+    it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+
+    Given a string s, return true if it is a palindrome, or false otherwise.
+
+ 
+
+    Example 1:
+    ----------
+
+    Input: s = "A man, a plan, a canal: Panama"
+    Output: true
+    Explanation: "amanaplanacanalpanama" is a palindrome.
+
+
+    Example 2:
+    ----------
+
+    Input: s = "race a car"
+    Output: false
+    Explanation: "raceacar" is not a palindrome.
+
+
+    Example 3:
+    ----------
+
+    Input: s = " "
+    Output: true
+    Explanation: s is an empty string "" after removing non-alphanumeric characters.
+    Since an empty string reads the same forward and backward, it is a palindrome.
+</pre>
+<pre>
+    <code style="font-weight: 600; color: red;">
+        var isPalindrome = function(s) {
+            s = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+            let left = 0;
+            let right = s.length - 1;
+        
+            while (left < right) {
+                if (s[left] !== s[right]) {
+                    return false;
+                }
+                left++;
+                right--;
+            }
+        
+            return true;    
+        };
+    </code>
+    <code style="color: blue;">
+        s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+        This line of code cleans a string s by:
+
+        Converting it to lowercase, and
+
+        Removing all characters except letters (a–z) and digits (0–9).
+
+
+        /.../ — Delimits the regular expression.
+        [^a-z0-9] — A negated character set:
+        ^ inside square brackets means "not".
+        a-z means all lowercase letters.
+        0-9 means all digits.
+        So [^a-z0-9] matches any character that is NOT a lowercase letter or digit.
+        g — The global flag, meaning it will replace all matches in the string, not just the first one.
+        '', — the replacement string
+        All matched characters (i.e., anything that's not a-z or 0-9) are replaced with an empty string, effectively removing them.
+    </code>
+</pre>
