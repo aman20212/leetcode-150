@@ -1,0 +1,320 @@
+<h2>3Sum</h2>
+<pre>
+    <code>
+        Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+
+        Notice that the solution set must not contain duplicate triplets.
+
+        
+
+        Example 1:
+
+        Input: nums = [-1,0,1,2,-1,-4]
+        Output: [[-1,-1,2],[-1,0,1]]
+        Explanation: 
+        nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0.
+        nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0.
+        nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0.
+        The distinct triplets are [-1,0,1] and [-1,-1,2].
+        Notice that the order of the output and the order of the triplets does not matter.
+        Example 2:
+
+        Input: nums = [0,1,1]
+        Output: []
+        Explanation: The only possible triplet does not sum up to 0.
+        Example 3:
+
+        Input: nums = [0,0,0]
+        Output: [[0,0,0]]
+        Explanation: The only possible triplet sums up to 0.
+    </code>
+
+    <code style="color: red; font-weight: 500;">
+        I think it's tough to manage 3 indices at the same time, so my strategy is to fix i.
+
+        Input: nums = [-1,0,1,2,-1,-4]
+        [-1,0,1,2,-1,-4]
+        i
+        We fix i at index 0 at first. Then we have other two indices j and k. j starts from i + 1 and k starts from the last index.
+
+        [-1,0,1,2,-1,-4]
+        i j         k
+        Basically, we calculate a total of 3 numbers, then if the total is 0, that is one of target triplets.
+
+        But there are many cases where the total is not 0. In that case we should move j or k to the next, because we fix i at index 0 at first. All calculations in a loop this time, we must use i number.
+
+        Question
+
+        How can we decide and move j or k to the next index?
+
+        My strategy is to sort input array, so that we can decide which index we should move.
+
+        [-1,0,1,2,-1,-4]
+        ↓
+        [-4,-1,-1,0,1,2]
+        i  j        k
+        ⭐️ Points
+
+        Why do we need to sort input array?
+        That's because if the total is greater than 0, we want small total next time. In that case, we should move k to the next because input array is sorted, we are sure that if k move to left index, we will get small total compared with the current total.
+
+        On the other hand, if the total is smaller than 0, we want big total next time. In that case we should move j to the right index to get big total.
+
+        Let's see one by one.
+
+        [-4,-1,-1,0,1,2]
+        i  j        k
+
+        nums[i] + nums[j] + nums[k] = -3
+        We should move j to the next.
+
+        I'll speed up
+
+        [-4,-1,-1,0,1,2]
+        i     j     k
+
+        nums[i] + nums[j] + nums[k] = -3
+
+        j moves to the next
+
+        [-4,-1,-1,0,1,2]
+        i       j   k
+
+        nums[i] + nums[j] + nums[k] = -2
+
+        j moves to the next
+
+        [-4,-1,-1,0,1,2]
+        i         j k
+
+        nums[i] + nums[j] + nums[k] = -1
+
+        j moves to the next
+
+        [-4,-1,-1,0,1,2]
+        i           k
+                    j
+        Now j and k are the same index, so we stop iteration. For this question, we have to find all triplets.
+
+        Next, we fix i at index 1. j starts from i + 1 and k starts from the last index.
+
+        [-4,-1,-1,0,1,2]
+            i  j     k
+        We do the same thing.
+
+        [-4,-1,-1,0,1,2]
+            i  j     k
+
+        nums[i] + nums[j] + nums[k] = 0
+        We found total 0 and 3 indices are different, so current combination meets condition the description says. That is one of answers.
+
+        res = [[-1,-1,2]]
+        When we found the target triplet, there are several ways to move pointers. I think easiest way is to move j once.
+
+        But there is problem. What if the next number is the same as current number like this.
+
+        [-4,-1,-1,-1,1,2]
+            i    j   k
+
+        I changed 0 to -1 at index 3.
+        In this case, we found [-1,-1,2] again. It's the target triplet but the description says "No duplicate".
+
+        To avoid this, when we found one of the target triplets, we move j once but we check the number after we move j. If the number is the same previous number, we continue to move j until we find differnt number, so that we can avoid duplicate combination.
+
+        ⭐️ Points
+
+        Move j until we find different number when we find one of the target triplets.
+
+        Let's go back to main topic.
+
+        [-4,-1,-1,0,1,2]
+            i    j   k
+
+        nums[i] + nums[j] + nums[k] = 1
+        Now the total is greater than 0. We should move k to the left index to get small total.
+
+        [-4,-1,-1,0,1,2]
+            i    j k
+
+        nums[i] + nums[j] + nums[k] = 0
+        We found a new triplets that meets the conditions.
+
+        res = [[-1,-1,2], [-1,0,1]]
+        This example is example 1 in the description. It says those two combinations are return value, so I stop explanation.
+
+        After that, we do the same thing. j and k are the same index, so we fix i at index 2. j starts from i + 1 and k starts from the last index.
+
+        [-4,-1,-1,0,1,2]
+                i j   k
+        In the end,
+
+        return [[-1,-1,2], [-1,0,1]]
+        ------------------------------
+
+        Time complexity: O(n2)
+        Space complexity: O(n)
+    </code>
+    ----------------------------------------------------------------------------------------------
+    <code style="color: cornflowerblue; font-weight: 600;">
+        var threeSum = function(nums) {
+            let res = [];
+            nums.sort((a, b) => a - b);
+        
+            for (let i = 0; i < nums.length; i++) {
+                if (i > 0 && nums[i] === nums[i-1]) {
+                    continue;
+                }
+                
+                let j = i + 1;
+                let k = nums.length - 1;
+        
+                while (j < k) {
+                    let total = nums[i] + nums[j] + nums[k];
+        
+                    if (total > 0) {
+                        k--;
+                    } else if (total < 0) {
+                        j++;
+                    } else {
+                        res.push([nums[i], nums[j], nums[k]]);
+                        j++;
+        
+                        while (nums[j] === nums[j-1] && j < k) {
+                            j++;
+                        }
+                    }
+                }
+            }
+            return res;    
+        };
+    </code>
+    <code style="color: blue; font-weight: 400;">
+        This question is asking you to find all unique triplets in an array that sum up to zero. Here's how you can approach it:
+
+        Approach (Optimized - Two Pointers)
+        1. Sort the Array: Sorting helps in efficiently finding triplets while avoiding duplicates.
+        2. Fix One Element: Iterate through the array and fix one element at a time.
+        3. Use Two-Pointer Technique: For each fixed element, use two pointers (left and right) to find the other two elements that sum to zero.
+        4. Avoid Duplicates: Skip duplicate numbers to ensure unique triplets.
+
+        Step-by-Step Explanation
+        1. Sort the array to make it easier to avoid duplicate triplets.
+        2. Loop through the array and fix one element nums[i] at a time.
+        3. Use two pointers (left and right) to find pairs that sum to -nums[i]:
+        ○ If nums[i] + nums[left] + nums[right] == 0, add the triplet to the result.
+        ○ If the sum is too small, move left forward (left++).
+        ○ If the sum is too large, move right backward (right--).
+        4. Skip duplicates for both i, left, and right to avoid duplicate triplets.
+
+        Approach
+        Let's break down your Java solution for the Three Sum problem step by step.
+
+        Understanding the Goal
+        • Given an array nums, find all unique triplets [nums[i], nums[j], nums[k]] where:
+        ○ i != j != k
+        ○ nums[i] + nums[j] + nums[k] == 0
+        • The solution must not contain duplicate triplets.
+
+        Code Breakdown
+        class Solution {
+        public List<List> threeSum(int[] nums) {
+        • Defines a Solution class with a method threeSum that:
+        ○ Takes an array of integers (nums).
+        ○ Returns a list of lists (List<List>), where each inner list represents a unique triplet summing to zero.
+
+        Step 1: Initialize the Result List
+        List<List> res = new ArrayList<>();
+        • Creates an empty list res to store the valid triplets.
+
+        Step 2: Sort the Array
+        Arrays.sort(nums);
+        • Sorting helps eliminate duplicate triplets efficiently.
+        • It also makes it easier to apply the two-pointer technique.
+
+        Step 3: Iterate Over the Array
+        for (int i = 0; i < nums.length; i++) {
+        • Iterates over each element nums[i] in the array.
+        • This element is fixed as the first number in the triplet.
+
+        Step 4: Skip Duplicates for i
+        if (i > 0 && nums[i] == nums[i - 1]) {
+        continue;
+        }
+        • Avoids duplicate triplets by skipping repeated elements.
+        • If nums[i] is the same as the previous element (nums[i - 1]), we skip this iteration.
+
+        Step 5: Initialize Two Pointers
+        int j = i + 1;
+        int k = nums.length - 1;
+        • Uses two pointers:
+        ○ j (left pointer) starts right after i.
+        ○ k (right pointer) starts at the last index.
+
+        Step 6: Find Triplets with Two Pointers
+        while (j < k) {
+        • Runs as long as j and k don’t cross.
+
+        Step 7: Compute the Sum
+        int total = nums[i] + nums[j] + nums[k];
+        • Adds up the three numbers: nums[i], nums[j], and nums[k].
+
+        Step 8: Move Pointers Based on Sum
+        if (total > 0) {
+        k--;
+        } else if (total < 0) {
+        j++;
+        }
+        • If total > 0, the sum is too large, so move k left (decreasing the sum).
+        • If total < 0, the sum is too small, so move j right (increasing the sum).
+
+        Step 9: Store Valid Triplet
+        else {
+        res.add(Arrays.asList(nums[i], nums[j], nums[k]));
+        j++;
+        • If total == 0, we found a valid triplet!
+        • Store it in res using Arrays.asList(nums[i], nums[j], nums[k]).
+        • Move j forward to look for more pairs.
+
+        Step 10: Skip Duplicate Values for j
+        while (nums[j] == nums[j - 1] && j < k) {
+        j++;
+        }
+        • Avoids duplicate triplets by skipping consecutive duplicate values for nums[j].
+
+        Step 11: Return the Result
+        return res;
+        • Returns the list of unique triplets.
+
+        Example Walkthrough
+        Input:
+        nums = [-1, 0, 1, 2, -1, -4]
+        Sorted Array:
+        [-4, -1, -1, 0, 1, 2]
+        Iterations:
+        i = 0 (-4)
+        • j = 1 (-1), k = 5 (2)
+        ○ total = -4 + (-1) + 2 = -3 (increase j)
+        • j = 2 (-1), k = 5 (2)
+        ○ total = -4 + (-1) + 2 = -3 (increase j)
+        • j = 3 (0), k = 5 (2)
+        ○ total = -4 + 0 + 2 = -2 (increase j)
+        • j = 4 (1), k = 5 (2)
+        ○ total = -4 + 1 + 2 = -1 (increase j)
+        i = 1 (-1)
+        • j = 2 (-1), k = 5 (2)
+        ○ total = -1 + (-1) + 2 = 0 (store [-1, -1, 2])
+        • j = 3 (0), k = 4 (1)
+        ○ total = -1 + 0 + 1 = 0 (store [-1, 0, 1])
+        i = 2 (-1)
+        • Skipped (duplicate)
+        Final Output:
+        [[-1, -1, 2], [-1, 0, 1]]
+
+        Complexity
+        Time complexity:
+        O(N2)O(N^2)
+
+        Space complexity:
+        O(1)O(1)
+    </code>
+</pre>
