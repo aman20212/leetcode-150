@@ -1,0 +1,37 @@
+<h2>Merge Strings Alternatively</h2>
+<pre>
+    <code>
+        You are given two strings word1 and word2. Merge the strings by adding letters in alternating order, starting with word1. 
+        If a string is longer than the other, append the additional letters onto the end of the merged string.
+
+        Return the merged string.
+
+        
+
+        Example 1:
+
+        Input: word1 = "abc", word2 = "pqr"
+        Output: "apbqcr"
+        Explanation: The merged string will be merged as so:
+        word1:  a   b   c
+        word2:    p   q   r
+        merged: a p b q c r
+    </code>
+
+</pre>
+<h4 style="text-align: center">Solution</h4>
+<pre>
+    <code style="font-weight: 400; color: red;">
+        function mergeAlternately(word1: string, word2: string): string {
+            let result = "";
+            const longer = Math.min(word1.length, word2.length)
+            for (let i = 0; i < longer; i++) {
+              if (word1[i]) result += word1[i];
+              if (word2[i]) result += word2[i];
+            }
+            result += word1.substring(longer)
+            result += word2.substring(longer)
+            return result;
+          }
+    </code>
+</pre>
