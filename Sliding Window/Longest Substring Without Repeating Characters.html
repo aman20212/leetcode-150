@@ -1,0 +1,227 @@
+<h2>Longest Substring Without Repeating Characters</h2>
+<pre>
+    <code style="color: red; font-weight: 400;">
+        Given a string s, find the length of the longest substring without duplicate characters.
+
+ 
+
+        Example 1:
+
+        Input: s = "abcabcbb"
+        Output: 3
+        Explanation: The answer is "abc", with the length of 3.
+        Example 2:
+
+        Input: s = "bbbbb"
+        Output: 1
+        Explanation: The answer is "b", with the length of 1.
+        Example 3:
+
+        Input: s = "pwwkew"
+        Output: 3
+        Explanation: The answer is "wke", with the length of 3.
+        Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+    </code>
+</pre>
+----------------------------------------------------------------------------------------------
+<pre>
+    <code style="color: blue; font-weight: 500;">
+        var lengthOfLongestSubstring = function(s) {
+            let left = 0;
+            let maxLength = 0;
+            let charSet = new Set();
+        
+            for (let right = 0; right < s.length; right++) {
+                while (charSet.has(s[right])) {
+                    charSet.delete(s[left]);
+                    left++;
+                }
+        
+                charSet.add(s[right]);
+                maxLength = Math.max(maxLength, right - left + 1);
+            }
+        
+            return maxLength;    
+        };
+
+
+        Time complexity: O(n)
+        Space complexity: O(1)
+    </code>
+</pre>
+<h3>Explanation</h3>
+<pre>
+    <code>
+        Solution 1 - Sliding Window & Set
+        ----------------------------------------------------------------------------------------------
+
+        First of all, we create
+
+        left = 0 
+        max_length = 0 (returned value)
+        char_set = set() 
+        left is pointer of sliding window.
+        max_length is a value we should return.
+        char_set is to keep current characters forming the longest string with the two conditions above.
+
+        We will iterate through all characters one by one and create right pointer of sliding window with for loop.
+
+        for right in range(len(s)):
+        Let's begin!
+
+        Input: s = "abcabcbb"
+        "abcabcbb"
+        r
+        l
+
+        l is left of sliding window
+        r is right of sliding window
+        We found a. Every time we check char_set if we have the same character or not. In this case, we don't have a in char_set, so add a to char_set.
+
+        char_set = {a}
+        After that, we check max length.
+
+        max_length = 0
+        current length = right - left + 1
+        Why +1?
+        That's because current length of string is 1 which is only a, so if we don't add 1, we will calculate 0(right) - 0(left) = 0 which is wrong answer.
+
+        This happens because index number usually starts from 0 but actual count we do in daily life starts 1. That's why we need to kind of convert an index number to a real number by adding +1.
+
+        Let's go back to the main point.
+
+        max_length = 1
+        Next, only right pointer move next. I'll speed up.
+
+        "abcabcbb"
+        lr
+
+        Do we have "b"? → No
+        char_set = {a, b}
+
+        max_length = 2 (right(1) - left(0) + 1)
+        Next, only right pointer move next.
+
+        "abcabcbb"
+        l r
+
+        Do we have "c"? → No
+        char_set = {a,b,c}
+
+        max_length = 3 (right(2) - left(0) + 1)
+        Next, only right pointer move next.
+
+        "abcabcbb"
+        l  r
+
+        Do we have "a"? → Yes
+        In this case, we have duplicate number a, so we can't continue to expand the string. That's why it's time to move left to the next. And we have important point.
+
+        ⭐️ Points
+
+        When we move left to index 1, a at index 0 will be out of bounds, so we should remove a from char_set, so that we can keep unique characters forming the current string.
+
+        In this case, we use while loop, I'll explain why later.
+
+        "abcabcbb"
+        l  r
+
+        - Do we have "a"? → Yes, remove "a" in char_set
+        char_set = {b,c}
+
+        - move left to the next
+        "abcabcbb"
+        l r
+
+        - There is no "a" in char_set, we stop while looping.
+        - And add crreunt "a" to char_set
+        char_set = {b,c,a}
+
+        max_length = 3 (right(3) - left(1) + 1)
+        Next, only right pointer move next.
+
+        "abcabcbb"
+        l  r
+
+        - Do we have "b"? → Yes, remove "b" in char_set
+        char_set = {c,a}
+
+        - move left to the next
+        "abcabcbb"
+        l r
+
+        - There is no "b" in char_set, we stop while looping.
+        - And add crreunt "b" to char_set
+        char_set = {c,a,b}
+
+        max_length = 3 (right(4) - left(2) + 1)
+        Next, only right pointer move next.
+
+        "abcabcbb"
+        l  r
+
+        - Do we have "c"? → Yes, remove "c" in char_set
+        char_set = {a,b}
+
+        - move left to the next
+        "abcabcbb"
+            l r
+
+        - There is no "c" in char_set, we stop while looping.
+        - And add crreunt "c" to char_set
+        char_set = {a,b,c}
+
+        max_length = 3 (right(5) - left(3) + 1)
+        Next, only right pointer move next.
+
+        "abcabcbb"
+            l  r
+
+        - Do we have "b"? → Yes, remove "a" in char_set
+        Wait! Why do we have to remove a instead of b? That's because b is now duplicate character between left and right, so we have to remove chracters until we find b with left pointer.
+
+        ⭐️ Points
+        Let's look at the string deeply.
+
+        "abcb"
+        l  r
+        If we keep a in the string, we have to also keep the first b because a is outside of the first b in the string. If we want to remove the first b, we must remove a before we remove the first b. This is substring.
+
+        In the end,
+
+        "abcb"
+        lr
+        Let's look at the process.
+
+        "abcabcbb"
+            l  r
+
+        - Do we have "b"? → Yes, remove "a" in char_set
+        char_set = {b,c}
+
+        - Move left to the next
+        "abcabcbb"
+            l r
+
+        - Do we have "b"? → Yes, remove "b" in char_set
+        char_set = {c}
+
+        - Move left to the next
+        "abcabcbb"
+            lr
+
+        - Do we have "b"? → No, now we stop while loop
+
+        - Add current "b" to char_set
+        - char_set = {c,b}
+
+        max_length = 3 > (right(6) - left(5) + 1)
+        I hope now you understand why we use while loop when remove charcters. There is an case where we remove multiple characters.
+
+        I stop rest of explanation because we will repeat the same process.
+
+        return 3
+        As you can see, we keep char_set the same as the string between left and right when we add a current character to char_set.
+        That's why we can check if current character is duplicate or not.
+    </code>
+</pre>
