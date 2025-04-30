@@ -1,0 +1,142 @@
+<h2>Minimum Window Substring</h2>
+<pre>
+    <code style="font-weight: 400; color: red;">
+        Given two strings s and t of lengths m and n respectively, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "".
+
+        The testcases will be generated such that the answer is unique.
+
+        
+
+        Example 1:
+        ----------
+
+        Input: s = "ADOBECODEBANC", t = "ABC"
+        Output: "BANC"
+        Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+
+
+        Example 2:
+        ----------
+
+        Input: s = "a", t = "a"
+        Output: "a"
+        Explanation: The entire string s is the minimum window.
+
+
+        Example 3:
+        ----------
+
+        Input: s = "a", t = "aa"
+        Output: ""
+        Explanation: Both 'a's from t must be included in the window.
+        Since the largest window of s only has one 'a', return empty string.
+    </code>
+    <code style="color: blue; font-weight: 500;">
+        /**
+        * @param {string} s
+        * @param {string} t
+        * @return {string}
+        */
+        var minWindow = function(s, t) {
+            if (s.length < t.length) return "";
+            
+            const map = new Array(128).fill(0);
+            let count = t.length;
+            let start = 0, minStart = 0, minLen = Infinity;
+            
+            for (let c of t) {
+                map[c.charCodeAt(0)]++;
+            }
+            
+            for (let end = 0; end < s.length; end++) {
+                if (map[s.charCodeAt(end)]-- > 0) count--;
+                
+                while (count === 0) {
+                    if (end - start + 1 < minLen) {
+                        minStart = start;
+                        minLen = end - start + 1;
+                    }
+                    
+                    if (map[s.charCodeAt(start++)]++ === 0) count++;
+                }
+            }
+            
+            return minLen === Infinity ? "" : s.slice(minStart, minStart + minLen);
+        };
+    </code>
+</pre>
+
+<h3>Explanation</h3>
+<pre>
+    <code>
+        Algorithm:
+        ----------
+
+        Step 1: Initialize variables:
+
+        Two pointers: start and end, both initialized to 0. These will represent the window's left and right boundaries, respectively.
+        A character frequency map for t (let's call it target_freq), which will store the count of each character in t.
+        A second frequency map (let's call it window_freq) to track the characters within the current window of s.
+        A counter variable count to keep track of how many characters from t have been fully matched in the current window.
+
+
+        Step 2: Populate the frequency map for t:
+
+        For each character in t, increment its corresponding count in target_freq.
+
+
+        Step 3: Expand the window (Move the end pointer):
+
+        Start traversing s from left to right by moving the end pointer. For each character s[end], increment its frequency in window_freq.
+        If the frequency of s[end] in window_freq matches the frequency in target_freq for that character, increment count.
+
+
+        Step 4: Check for valid windows:
+
+        Once count equals the number of unique characters in t (i.e., the window contains all characters of t), move the start pointer to shrink the window.
+        For each valid window, compare its length with the minimum window length found so far. Update the minimum window length and its starting position if a smaller valid window is found.
+
+
+        Step 5: Shrink the window (Move the start pointer):
+
+        When the window is valid, try to shrink it by moving the start pointer to the right. After each move, update window_freq and check whether the window still contains all characters of t.
+        If the window becomes invalid (i.e., missing a required character), stop shrinking and continue expanding by moving the end pointer.
+
+
+        Step 6: Return the result:
+
+        Once the end pointer reaches the end of s, return the smallest valid window substring found.
+
+
+        Time Complexity (TC):O(n)
+        -------------------------
+        Sliding Window Expansion (end pointer):
+
+        The end pointer moves from the start of s to the end of s. Each character in s is processed once, so the time complexity of this is O(m), where m is the length of s.
+        Sliding Window Contraction (start pointer):
+
+        The start pointer can also traverse the entire string s, but it only moves when the window contains all characters from t. The start pointer can move at most m times as well, since every character in s is processed once during contraction.
+        Therefore, the time complexity of shrinking the window is also O(m).
+        Checking and Updating Frequencies (map array):
+
+        Checking whether the current window contains all characters from t requires constant time per operation because we are using an array of fixed size 128 (int[] map = new int[128]) to store the frequency of characters (based on ASCII values).
+        Therefore, all operations related to map (checking and updating character frequencies) take O(1) time per operation.
+        Total Time Complexity:
+
+        Since both start and end traverse the entire string s and the operations inside the loop are O(1), the overall time complexity is O(m + n), where m is the length of s and n is the length of tbut since n (the length of t) is smaller than or equal to m (the length of s), we can simplify the complexity to O(m), where m is the length of the string s.
+
+
+        Space Complexity (SC):O(1)
+        --------------------------
+        Frequency Map (map array):
+
+        The map array has a fixed size of 128 (since it stores the frequency of ASCII characters), regardless of the length of s or t.
+        The space complexity for the map array is O(1) (constant space).
+        Other Variables:
+
+        A few other integer variables like count, start, end, minStart, and minLen are used, but these take constant space.
+        Total Space Complexity:
+
+        The space complexity is O(n) because we need to store the characters in t in the map array and count the frequencies. However, since the map array is of constant size (128), it doesn’t depend on the size of s or t. So, the overall space complexity is O(1), or more accurately O(128), which is effectively constant.
+    </code>
+</pre>
