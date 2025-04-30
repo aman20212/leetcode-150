@@ -1,0 +1,168 @@
+<h2>Greatest Common Divisor of Strings</h2>
+<pre>
+    <code style="font-weight: 400; color: red;">
+        For two strings s and t, we say "t divides s" if and only if s = t + t + t + ... + t + t (i.e., t is concatenated with itself one or more times).
+
+        Given two strings str1 and str2, return the largest string x such that x divides both str1 and str2.
+
+        
+
+        Example 1:
+
+        Input: str1 = "ABCABC", str2 = "ABC"
+        Output: "ABC"
+        Example 2:
+
+        Input: str1 = "ABABAB", str2 = "ABAB"
+        Output: "AB"
+        Example 3:
+
+        Input: str1 = "LEET", str2 = "CODE"
+        Output: ""
+    </code>
+    <code style="font-weight: 400; color: blue;">
+        What is GCD?
+        ------------
+        The GCD of two numbers is the largest number that divides both of them without leaving a remainder.
+
+        For example:
+
+        The GCD of 12 and 18 is 6, because 6 is the largest number that divides both 12 and 18 evenly.
+
+        12 ÷ 6 = 2
+
+        18 ÷ 6 = 3
+
+        How to find the GCD of two numbers?
+        There are several ways to compute the GCD, but two common methods are:
+
+        1. Using Division (Euclidean Algorithm)
+        This is the most efficient way to compute the GCD. The idea is:
+
+        If you repeatedly divide the larger number by the smaller number and replace the larger number with the remainder, the process will eventually lead to the GCD.
+
+        Steps:
+        ------
+
+        Divide the larger number by the smaller number.
+
+        Replace the larger number with the remainder.
+
+        Repeat until the remainder is 0. When the remainder becomes 0, the smaller number is the GCD.
+
+        Example: Find the GCD of 48 and 18 using the Euclidean algorithm:
+        Divide 48 by 18:
+
+        48 ÷ 18 = 2 (remainder 12)
+
+        Now, divide 18 by the remainder (12):
+
+        18 ÷ 12 = 1 (remainder 6)
+
+        Now, divide 12 by the remainder (6):
+
+        12 ÷ 6 = 2 (remainder 0)
+
+        Since the remainder is now 0, the GCD is 6.
+    </code>
+    --------------------------------------------------------
+    <code style="font-weight: 400; font-style: italic; color: green;">
+        var gcdOfStrings = function(str1, str2) {
+            // Step 1: Check if str1 + str2 is equal to str2 + str1
+            if (str1 + str2 !== str2 + str1) return "";  // If not, no common divisor string exists
+        
+            // Step 2: Euclidean algorithm to calculate GCD of the lengths of str1 and str2
+            const gcdLength = (a, b) => {
+                while (b !== 0) {
+                    let temp = b;
+                    b = a % b;  // Find remainder
+                    a = temp;  // Update a with the old b
+                }
+                return a;  // The GCD is now in a
+            };
+            
+            // Step 3: Calculate the GCD of the lengths of str1 and str2
+            const len = gcdLength(str1.length, str2.length);
+        
+            // Step 4: Return the substring of str1 (or str2) of length 'len'
+            // This substring is the greatest common divisor string
+            return str1.substring(0, len);
+        };
+        
+    </code>
+    -------------------------------------------------------------------
+    <code style="font-weight: 300; color: brown;">
+        Time Complexity:
+        ---------------
+        Concatenation (str1 + str2 and str2 + str1):
+
+        O(n + m)
+
+        Concatenating two strings of length n and m takes time proportional to the sum of their lengths (n + m).
+
+        Comparison of concatenated strings (str1 + str2 !== str2 + str1):
+
+        O(n + m)
+
+        Comparing two strings of length n + m also takes time proportional to their length.
+
+        Euclidean Algorithm (for GCD of lengths of str1 and str2):
+
+        O(log(min(n, m)))
+
+        The Euclidean algorithm for calculating the GCD of two numbers (n and m) works in log(min(n, m)) time. This is an efficient logarithmic operation.
+
+        Substring Extraction (str1.substring(0, len)):
+
+        O(len), where len = gcd(n, m)
+
+        Extracting a substring of length len from str1 takes O(len) time. In the worst case, len is min(n, m).
+
+        Total Time Complexity:
+        ------------------------
+        O(n + m + log(min(n, m)))
+
+        Why?:
+
+        The dominant costs are string concatenation and comparison (O(n + m)), with a smaller cost from the Euclidean algorithm (O(log(min(n, m)))). 
+        The substring operation adds a small cost relative to the lengths involved (O(len)).
+
+        Space Complexity:
+        ----------------
+        String Concatenation (str1 + str2 and str2 + str1):
+
+        O(n + m)
+
+        The space required to store the concatenated strings is proportional to the total length of str1 and str2.
+
+        Euclidean Algorithm:
+        --------------------
+
+        O(1)
+
+        The algorithm uses only a constant amount of extra space to store variables (a, b, and temp).
+
+        Substring Extraction:
+
+        O(1) (in most cases)
+
+        Substring extraction generally does not use additional space, as it works with a view into the original string. However, if a new string object is created, it could potentially take up space proportional to the substring's length.
+
+        Total Space Complexity:
+        -----------------------
+        O(n + m)
+        Why?:
+
+        The primary space cost comes from the string concatenation (O(n + m)), as this creates new strings that need to be stored temporarily. The space used by the Euclidean algorithm is constant, and the substring extraction is either constant or negligible.
+
+        Final Summary:
+        --------------
+        Time Complexity: O(n + m + log(min(n, m)))
+
+        Dominated by string concatenation and comparison (O(n + m)), with the Euclidean algorithm (O(log(min(n, m)))) and substring extraction adding smaller costs.
+
+        Space Complexity: O(n + m)
+
+        Primarily driven by the space required to store the concatenated strings (str1 + str2 and str2 + str1).
+    </code>
+</pre>
