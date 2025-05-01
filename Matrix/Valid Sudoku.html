@@ -1,0 +1,278 @@
+<h2>Valid Sudoku</h2>
+<pre>
+    <code>
+        In JavaScript, a matrix is represented as an array of arrays, where each inner array represents a row.
+
+        Example: 2*3 matrix
+        --------------------
+        
+        const matrix = [
+            [1, 2, 3],  // Row 0
+            [4, 5, 6]   // Row 1
+        ];
+
+        This Matrix Looks like
+        1  2  3
+        4  5  6
+
+
+        matrix[0][0] is 1
+        matrix[1][2] is 6
+
+        Accessing Elements
+        --------------------
+        for (let i = 0; i < matrix.length; i++) {
+            for (let j = 0; j < matrix[i].length; j++) {
+              console.log(`Element at [${i}][${j}] is ${matrix[i][j]}`);
+            }
+        }
+          
+
+
+    </code>
+
+    <code>
+        A Sudoku game is a perfect real-world example of using a 9x9 matrix (a grid of 81 cells) — and yes, you can absolutely implement it using JavaScript!
+
+        What is Sudoku?
+        --------------
+        It's a 9x9 grid divided into 3x3 boxes.
+
+        Each row, column, and box must contain all numbers from 1 to 9, with no duplicates.
+
+        const sudokuBoard = [
+                [5, 3, 0, 0, 7, 0, 0, 0, 0],
+                [6, 0, 0, 1, 9, 5, 0, 0, 0],
+                [0, 9, 8, 0, 0, 0, 0, 6, 0],
+                
+                [8, 0, 0, 0, 6, 0, 0, 0, 3],
+                [4, 0, 0, 8, 0, 3, 0, 0, 1],
+                [7, 0, 0, 0, 2, 0, 0, 0, 6],
+                
+                [0, 6, 0, 0, 0, 0, 2, 8, 0],
+                [0, 0, 0, 4, 1, 9, 0, 0, 5],
+                [0, 0, 0, 0, 8, 0, 0, 7, 9]
+        ];
+
+        Accessing and Modifying the Board
+        --------------------------------------------------------
+        // Change cell at row 0, column 2 to 4
+        sudokuBoard[0][2] = 4;
+
+
+    </code>
+</pre>
+<hr />
+<pre>
+    <code>
+        Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+
+        Each row must contain the digits 1-9 without repetition.
+        Each column must contain the digits 1-9 without repetition.
+        Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+        Note:
+
+        A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+        Only the filled cells need to be validated according to the mentioned rules.
+        
+
+
+        Help me with this question, along with time and space complexity.
+    </code>
+
+    <code>
+        Rules Recap:
+        ------------
+        Each row must have unique digits 1–9.
+
+        Each column must have unique digits 1–9.
+
+        Each 3x3 sub-box must have unique digits 1–9.
+
+
+        function isValidSudoku(board) {
+            const rows = new Array(9).fill(0).map(() => new Set());
+            const cols = new Array(9).fill(0).map(() => new Set());
+            const boxes = new Array(9).fill(0).map(() => new Set());
+          
+            for (let i = 0; i < 9; i++) {
+              for (let j = 0; j < 9; j++) {
+                const val = board[i][j];
+          
+                if (val === '.') continue; // skip empty cells
+          
+                if (rows[i].has(val)) return false;   // check row
+                if (cols[j].has(val)) return false;   // check column
+          
+                const boxIndex = Math.floor(i / 3) * 3 + Math.floor(j / 3);
+                if (boxes[boxIndex].has(val)) return false; // check 3x3 box
+          
+                rows[i].add(val);
+                cols[j].add(val);
+                boxes[boxIndex].add(val);
+              }
+            }
+          
+            return true; // valid board
+        }
+
+
+        Time & Space Complexity
+        --------------------------
+        Time Complexity: O(1)
+
+        Although we loop through 81 cells (9x9), it's considered constant (O(1)) since the board size is fixed.
+
+        Space Complexity: O(1)
+        --------------------------
+
+        We use three arrays of 9 Sets each, all of constant size.
+
+
+        What Are We Checking?
+        ---------------------
+        We need to make sure that every digit from '1' to '9':
+
+        Appears only once per row
+
+        Appears only once per column
+
+        Appears only once per 3x3 box
+
+        We can ignore empty cells (usually represented by '.').
+
+        ✅ Data Structures Used
+        ------------------------
+        We use three arrays of sets to track values we've seen:
+
+        const rows = new Array(9).fill(0).map(() => new Set());
+        const cols = new Array(9).fill(0).map(() => new Set());
+        const boxes = new Array(9).fill(0).map(() => new Set());
+        rows[i] stores values in row i.
+
+        cols[j] stores values in column j.
+
+        boxes[k] stores values in 3x3 sub-box k.
+
+        Each Set allows constant time lookups and prevents duplicates.
+
+        🔄 Iteration Logic
+        ------------------
+        We scan every cell:
+
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                const val = board[i][j];
+
+                if (val === '.') continue; // ignore empty cells
+        🔍      Checking for Duplicates
+                If the value is already in the row, column, or box, it's invalid:
+
+                if (rows[i].has(val)) return false;    // duplicate in row
+                if (cols[j].has(val)) return false;    // duplicate in column
+                if (boxes[boxIndex].has(val)) return false;  // duplicate in box
+                🔢 Box Index Calculation
+                Each 3x3 box is indexed from 0 to 8 like this:
+
+
+                0 | 1 | 2
+                ---------
+                3 | 4 | 5
+                ---------
+                6 | 7 | 8
+                To calculate which box a cell (i, j) belongs to:
+
+
+                const boxIndex = Math.floor(i / 3) * 3 + Math.floor(j / 3);
+                For example:
+
+                Cell (4, 5) → box Math.floor(4/3)*3 + Math.floor(5/3) → 1*3 + 1 → 4 → middle box.
+
+                ✅ Storing the Digit
+                If the digit isn’t already present in its row, column, or box:
+
+                rows[i].add(val);
+                cols[j].add(val);
+                boxes[boxIndex].add(val);
+                We add it so we can check for duplicates as we continue scanning.
+
+                🧾 Final Return
+                If no duplicates are found after scanning the whole board:
+
+
+                return true;
+
+          
+    </code>
+</pre>
+
+<hr />
+
+<h4>Why Box Calculation ?</h4>
+<pre>
+    <code>
+        Sudoku Rule Recap
+        -----------------
+        A valid Sudoku board must satisfy all three constraints:
+
+        Each row contains digits 1–9 with no duplicates
+
+        Each column contains digits 1–9 with no duplicates
+
+        Each 3×3 sub-box contains digits 1–9 with no duplicates ✅ ← this is the part you're asking about
+
+
+        Why Check Boxes?
+        ----------------
+        Let’s say you only check rows and columns, and ignore boxes.
+
+        Here’s a board that would pass the row and column checks, but is invalid due to the 3×3 box rule:
+
+
+        5 3 . | . 7 . | . . .
+        6 . . | 1 9 5 | . . .
+        . 9 8 | . . . | . 6 .
+
+        8 . . | . 6 . | . . 3
+        4 . . | 8 . 3 | . . 1
+        7 . . | . 2 . | . . 6
+
+        . 6 . | . . . | 2 8 .
+        . . . | 4 1 9 | . . 5
+        . . . | . 8 . | . 7 9
+        Let’s focus on the top-left box:
+
+
+        5 3 .
+        6 . .
+        . 9 8
+
+        If you insert another 5 in that 3×3 box, but not in the same row or column, row and column rules would still pass — but the Sudoku is invalid, 
+        because the box now has two 5s.
+
+        🔍 Example Violation (Hidden if No Box Check)
+        Suppose we do:
+
+
+        board[2][2] = '5';  // add 5 in top-left 3x3 box
+        Now:
+
+        Row 2: no duplicate ✅
+
+        Column 2: no duplicate ✅
+
+        But the box (top-left 3x3) has two 5s ❌
+
+        So the board becomes invalid — but you'd miss that without checking the box.
+
+        ✅ Why 3 Checks Are Required
+        To fully validate a Sudoku board, you must check:
+
+        Constraint	Purpose
+        Rows	Prevent duplicates in horizontal lines
+        Columns	Prevent duplicates in vertical lines
+        Boxes	Prevent duplicates in the 3×3 sub-grids
+
+        Ignoring any one of these allows invalid boards to pass.
+    </code>
+</pre>
