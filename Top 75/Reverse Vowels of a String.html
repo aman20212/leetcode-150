@@ -1,0 +1,76 @@
+<h2>Reverse Vowels of a String</h2>
+
+<pre>
+    <code>
+        Given a string s, reverse only all the vowels in the string and return it.
+
+        The vowels are 'a', 'e', 'i', 'o', and 'u', and they can appear in both lower and upper cases, more than once.
+
+        
+
+        Example 1:
+
+        Input: s = "IceCreAm"
+
+        Output: "AceCreIm"
+
+        Explanation:
+
+        The vowels in s are ['I', 'e', 'e', 'A']. On reversing the vowels, s becomes "AceCreIm".
+    </code>
+
+    <code style="color: red; font-weight: 600">
+        var reverseVowels = function(s) {
+            const vowels = new Set('aeiouAEIOU');
+            const chars = Array.from(s);
+            let left = 0, right = s.length - 1;
+        
+            while (left < right) {
+                const isLeftVowel = vowels.has(chars[left]);
+                const isRightVowel = vowels.has(chars[right]);
+        
+                if (isLeftVowel && isRightVowel) {
+                    [chars[left], chars[right]] = [chars[right], chars[left]];
+                    left++;
+                    right--;
+                } else {
+                    if (!isLeftVowel) left++;
+                    if (!isRightVowel) right--;
+                }
+            }
+        
+            return chars.join('');
+        };
+        
+    </code>
+
+    <code style="color: blue; font-weight: 600">
+        var reverseVowels = function(s) {
+            const vowels = new Set(['a', 'e', 'i', 'o', 'u']);
+            const chars = s.split('');
+            const vowelIndices = [];
+            const vowelChars = [];
+        
+            // Step 1: Collect vowels and their indices
+            for (let i = 0; i < chars.length; i++) {
+                if (vowels.has(chars[i].toLowerCase())) {
+                    vowelIndices.push(i);
+                    vowelChars.push(chars[i]);
+                }
+            }
+        
+            // Step 2: Reverse the vowels
+            vowelChars.reverse();
+        
+            // Step 3: Replace vowels in original positions
+            for (let i = 0; i < vowelIndices.length; i++) {
+                chars[vowelIndices[i]] = vowelChars[i];
+            }
+        
+            return chars.join('');
+        };
+        
+    </code>
+</pre>
+
+<h4>Two Pointers approach: Space Complexity : 0(n) Time Complexity : 0(n)</h4>
