@@ -1,0 +1,50 @@
+<h2>Rotate Immage</h2>
+<pre>
+    <code>
+        You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees (clockwise).
+
+        You have to rotate the image in-place, which means you have to modify the input 2D matrix directly. 
+        DO NOT allocate another 2D matrix and do the rotation.
+
+ 
+
+        Example 1:
+
+
+        Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+        Output: [[7,4,1],[8,5,2],[9,6,3]]
+    </code>
+
+    <code style="color: red; font-weight: 600">
+        Steps to Rotate In-Place (90° Clockwise):
+        -----------------------------------------
+        Transpose the matrix: Convert rows to columns.
+
+        Reverse each row: This finishes the 90° rotation.
+
+        This avoids any additional memory allocation (O(1) extra space), and it’s clear and fast.
+
+        --------------------------------------------------
+
+        var rotate = function(matrix) {
+            const n = matrix.length;
+        
+            // Step 1: Transpose the matrix
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];
+                }
+            }
+        
+            // Step 2: Reverse each row
+            for (let i = 0; i < n; i++) {
+                matrix[i].reverse();
+            }
+        };
+        
+    </code>
+    <code style="color: blue; font: weight 700px;">
+        Time : 0(n2)
+        Space: 0(n)
+    </code>
+</pre>
