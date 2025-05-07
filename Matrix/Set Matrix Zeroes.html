@@ -1,0 +1,161 @@
+<h2>Set Matrix Zeroes</h2>
+<pre>
+    <code>
+        Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.
+
+        You must do it in place.
+
+        Example 1:
+
+
+        Input: matrix = [[1,1,1],[1,0,1],[1,1,1]]
+        Output: [[1,0,1],[0,0,0],[1,0,1]]
+    </code>
+    <code style="color: red; font-weight: 500">
+        function setZeroes(matrix) {
+            const m = matrix.length;
+            const n = matrix[0].length;
+        
+            let firstRowZero = false;
+            let firstColZero = false;
+        
+            // Step 1: Determine if first row or first column has any zeroes
+            for (let i = 0; i < m; i++) {
+                if (matrix[i][0] === 0) firstColZero = true;
+            }
+            for (let j = 0; j < n; j++) {
+                if (matrix[0][j] === 0) firstRowZero = true;
+            }
+        
+            // Step 2: Use first row and column to mark zero rows/cols
+            for (let i = 1; i < m; i++) {
+                for (let j = 1; j < n; j++) {
+                    if (matrix[i][j] === 0) {
+                        matrix[i][0] = 0;
+                        matrix[0][j] = 0;
+                    }
+                }
+            }
+        
+            // Step 3: Set cells to zero based on markers
+            for (let i = 1; i < m; i++) {
+                for (let j = 1; j < n; j++) {
+                    if (matrix[i][0] === 0 || matrix[0][j] === 0) {
+                        matrix[i][j] = 0;
+                    }
+                }
+            }
+        
+            // Step 4: Zero out first column if needed
+            if (firstColZero) {
+                for (let i = 0; i < m; i++) {
+                    matrix[i][0] = 0;
+                }
+            }
+        
+            // Step 5: Zero out first row if needed
+            if (firstRowZero) {
+                for (let j = 0; j < n; j++) {
+                    matrix[0][j] = 0;
+                }
+            }
+        }
+        
+        
+
+    </code>
+    <code style="color: blue; font-weight: 500">
+        let matrix = [
+                    [1, 2, 3],
+                    [4, 0, 6],
+                    [7, 8, 9]
+                    ];
+                    You can visualize the indices like this:
+
+                    Index (i,j)	Value
+                    (0,0)	1
+                    (0,1)	2
+                    (0,2)	3
+                    (1,0)	4
+                    (1,1)	0
+                    (1,2)	6
+                    (2,0)	7
+                    (2,1)	8
+                    (2,2)	9
+
+                    Accessing Elements:
+                    matrix[0][1] → 2
+
+                    matrix[1][1] → 0 (this is the one we’ll use to set row 1 and column 1 to 0)
+
+                    matrix[2][0] → 7
+
+                    🧩 2. Explaining the Code Step-by-Step
+                    💡 Goal:
+                    Set entire row and column to 0 if any element is 0.
+
+                    Step 1: Check if First Row or Column Has Zeros
+
+                    for (let i = 0; i < m; i++) {
+                        if (matrix[i][0] === 0) firstColZero = true;
+                    }
+                    for (let j = 0; j < n; j++) {
+                        if (matrix[0][j] === 0) firstRowZero = true;
+                    }
+                    We store two flags:
+
+                    firstRowZero → true if there's a 0 in the first row
+
+                    firstColZero → true if there's a 0 in the first column
+
+                    This is important because we’ll use the first row and column as markers, and we 
+                    need to remember if they need to be zeroed at the end.
+
+                    Step 2: Mark Zero Rows/Columns Using First Row & Column
+
+                    for (let i = 1; i < m; i++) {
+                        for (let j = 1; j < n; j++) {
+                            if (matrix[i][j] === 0) {
+                                matrix[i][0] = 0;
+                                matrix[0][j] = 0;
+                            }
+                        }
+                    }
+                    If an element is 0 (e.g., matrix[1][1]), then:
+
+                    Set matrix[1][0] = 0 → mark row 1
+
+                    Set matrix[0][1] = 0 → mark column 1
+
+                    Step 3: Set Marked Rows and Columns to Zero
+
+                    for (let i = 1; i < m; i++) {
+                        for (let j = 1; j < n; j++) {
+                            if (matrix[i][0] === 0 || matrix[0][j] === 0) {
+                                matrix[i][j] = 0;
+                            }
+                        }
+                    }
+                    We now use our markers to set elements to 0.
+
+                    Step 4: Zero Out First Column (if needed)
+
+                    if (firstColZero) {
+                        for (let i = 0; i < m; i++) {
+                            matrix[i][0] = 0;
+                        }
+                    }
+                    Step 5: Zero Out First Row (if needed)
+
+                    if (firstRowZero) {
+                        for (let j = 0; j < n; j++) {
+                            matrix[0][j] = 0;
+                        }
+                    }
+
+    </code>
+    <code style="color: green; font-weight: 500">
+        ✅ Time Complexity: O(m * n)
+        ✅ Space Complexity: O(1) (in-place, ignoring input/output constraints)
+    </code>
+</pre>
