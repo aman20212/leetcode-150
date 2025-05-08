@@ -1,0 +1,123 @@
+<h2>String Compression</h2>
+<pre>
+    <code style="color: red; font-weight:700">
+        Given an array of characters chars, compress it using the following algorithm:
+
+        Begin with an empty string s. For each group of consecutive repeating characters in chars:
+
+        If the group's length is 1, append the character to s.
+        Otherwise, append the character followed by the group's length.
+        The compressed string s should not be returned separately, but instead, be stored in the input character array chars. Note that group lengths that are 10 or longer will be split into multiple characters in chars.
+
+        After you are done modifying the input array, return the new length of the array.
+
+        You must write an algorithm that uses only constant extra space.
+
+        
+
+        Example 1:
+
+        Input: chars = ["a","a","b","b","c","c","c"]
+        Output: Return 6, and the first 6 characters of the input array should be: ["a","2","b","2","c","3"]
+        Explanation: The groups are "aa", "bb", and "ccc". This compresses to "a2b2c3".
+    </code>
+    <code style="color: blue; font-weight: 700">
+        var compress = function(chars) {
+            let j = 0, count = 1;
+          
+            for (let i = 1; i <= chars.length; i++) {
+              if (chars[i] === chars[i - 1]) {
+                count++;
+              } else {
+                chars[j++] = chars[i - 1];              // Write character
+                if (count > 1) {
+                  for (let c of count.toString()) {
+                    chars[j++] = c;                     // Write each digit of count
+                  }
+                }
+                count = 1;                              // Reset counter
+              }
+            }
+          
+            return j;
+        };
+          
+    </code>
+    <code style="color: maroon; font-weight: 700">
+        Initial State:
+        --------------
+        chars = ["a", "a", "b", "b", "c", "c", "c"]
+
+        j = 0 (write pointer)
+
+        count = 1
+
+        🔄 Loop Iteration:
+        ✅ i = 1:
+        chars[1] === chars[0] → 'a' === 'a'
+
+        count = 2
+
+        ✅ i = 2:
+        chars[2] !== chars[1] → 'b' !== 'a'
+        ➡ Time to write the group 'a'
+
+        Write 'a' at chars[0], j++ → 1
+
+        count = 2 → write '2' at chars[1], j++ → 2
+
+        Reset count = 1
+
+        State:
+
+        chars = ["a", "2", "b", "b", "c", "c", "c"]
+        j = 2
+        ✅ i = 3:
+        chars[3] === chars[2] → 'b' === 'b'
+
+        count = 2
+
+        ✅ i = 4:
+        chars[4] !== chars[3] → 'c' !== 'b'
+        ➡ Write group 'b'
+
+        Write 'b' at chars[2], j++ → 3
+
+        Write '2' at chars[3], j++ → 4
+
+        Reset count = 1
+
+        State:
+
+        chars = ["a", "2", "b", "2", "c", "c", "c"]
+        j = 4
+        ✅ i = 5:
+        'c' === 'c' → count = 2
+
+        ✅ i = 6:
+        'c' === 'c' → count = 3
+
+        ✅ i = 7:
+        i == chars.length → out of bounds
+
+        This ends the last group 'c'
+        ➡ Write group 'c'
+
+        Write 'c' at chars[4], j++ → 5
+
+        Write '3' at chars[5], j++ → 6
+
+        Final state:
+        -----------
+        chars = ["a", "2", "b", "2", "c", "3"]
+        return 6
+
+        
+        🧠 Final Output:
+        Compressed array: ["a", "2", "b", "2", "c", "3"]
+
+        Return value: 6 (new length)
+
+
+    </code>
+</pre>
