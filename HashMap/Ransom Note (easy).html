@@ -1,0 +1,59 @@
+<h2>Ransom Note</h2>
+<pre>
+    <code>
+        Given two strings ransomNote and magazine, return true if ransomNote can be constructed by using the letters from magazine and false otherwise.
+
+        Each letter in magazine can only be used once in ransomNote.
+
+        
+
+        Example 1:
+
+        Input: ransomNote = "a", magazine = "b"
+        Output: false
+        Example 2:
+
+        Input: ransomNote = "aa", magazine = "ab"
+        Output: false
+        Example 3:
+
+        Input: ransomNote = "aa", magazine = "aab"
+        Output: true
+    </code>
+
+    <code style="color: red; font-weight: 700">
+        /**
+        * @param {string} ransomNote
+        * @param {string} magazine
+        * @return {boolean}
+        */
+        var canConstruct = function(ransomNote, magazine) {
+            if (ransomNote.length > magazine.length) return false;
+
+        let magCount = {};
+
+        // Count characters in the magazine
+        for (let char of magazine) {
+            magCount[char] = (magCount[char] || 0) + 1;
+        }
+
+        // Check if the ransom note can be formed
+        for (let char of ransomNote) {
+            if (!magCount[char]) return false;
+            magCount[char]--;
+        }
+
+        return true;
+        };
+
+
+
+        Time and Space Complexity
+        --------------------------
+        Time Complexity: O(n + m)
+        Where n is length of ransomNote, and m is length of magazine.
+
+        Space Complexity: O(1)
+        Since the character set is limited (only lowercase English letters), your object will have at most 26 keys.
+    </code>
+</pre>
