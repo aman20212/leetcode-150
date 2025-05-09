@@ -1,0 +1,162 @@
+<h2>Isomorphic Strings</h2>
+<pre>
+    <code>
+        Given two strings s and t, determine if they are isomorphic.
+
+        Two strings s and t are isomorphic if the characters in s can be replaced to get t.
+
+        All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character, but a character may map to itself.
+
+        
+
+        Example 1:
+        -----------
+
+        Input: s = "egg", t = "add"
+
+        Output: true
+
+        Explanation:
+
+
+        The strings s and t can be made identical by:
+
+        Mapping 'e' to 'a'.
+        Mapping 'g' to 'd'.
+
+
+        Example 2:
+        -----------
+
+        Input: s = "foo", t = "bar"
+
+        Output: false
+
+        Explanation:
+
+        The strings s and t can not be made identical as 'o' needs to be mapped to both 'a' and 'r'.
+
+        Example 3:
+        ----------
+
+        Input: s = "paper", t = "title"
+
+        Output: true
+    </code>
+    <code style="color: red; font-weight: 700">
+        var isIsomorphic = function(s, t) {
+            const charIndexS = {};
+            const charIndexT = {};
+        
+            for (let i = 0; i < s.length; i++) {
+                if (!(s[i] in charIndexS)) {
+                    charIndexS[s[i]] = i;
+                }
+        
+                if (!(t[i] in charIndexT)) {
+                    charIndexT[t[i]] = i;
+                }
+        
+                if (charIndexS[s[i]] !== charIndexT[t[i]]) {
+                    return false;
+                }
+            }
+        
+            return true;    
+        };
+
+
+
+    </code>
+    <code>
+        Solution 1 - Two HashMaps
+        --------------------------
+        Input: s = "egg", t = "add"
+        Simply, each character of both strings should be a pair, that means their indices should be the same.
+
+        To keep character and its index, we use two hashMaps.
+
+        char_index_s = {}
+        char_index_t = {}
+        First of all
+
+        s = "egg", t = "add"
+            ↑          ↑
+
+        e and a should be index 0
+
+        char_index_s = {e: 0}
+        char_index_t = {a: 0}
+        Next compare the indices of e and a. They are the same which is no porblem.
+
+        Move next
+
+        s = "egg", t = "add"
+            ↑          ↑
+
+        g and d should be index 1
+
+        char_index_s = {e: 0, g: 1}
+        char_index_t = {a: 0, d: 1}
+        Compare the indices of g and d. They are the same which is no porblem.
+
+        Move next
+
+        s = "egg", t = "add"
+            ↑          ↑
+
+        char_index_s = {e: 0, g: 1}
+        char_index_t = {a: 0, d: 1}
+        g and d should be index 1, because we already found the characters at index 1. To prove that, we have g and d in HashMaps.
+
+        Compare g and d. They are index 1 which is no problem.
+
+        Now we reach end of strings.
+
+        return True
+        Let's see false case. You will understand algorithm deeply. What if the last characters are a and d.
+
+        s = "ega", t = "add"
+            ↑          ↑
+
+        char_index_s = {e: 0, g: 1, a: 2}
+        char_index_t = {a: 0, d: 1}
+        In that case, a is a new character, so add a to HashMap with index 2. We already found d at index 1, so we don't add this time.
+
+        Next, compare indices of a and d.
+
+        a is index 2
+        d is index 1
+        They are different indices, that means we already use d with other character.
+
+        return False
+
+
+        Complexity
+        -----------
+        This is based on Python. Ohter might be different.
+
+        Time complexity: O(n)
+        n is length of input string
+
+        Space complexity: O(1)
+        s and t consist of any valid ascii character.
+
+
+    </code>
+    <code style="color: green; font-weight: 700">
+            var isIsomorphic = function(s, t) {
+                for (let i=0; i<s.length; i++) {
+            
+                    if (s.indexOf(s[i]) !== t.indexOf(t[i])) {
+                        
+                        return false;
+                    }
+                }
+                return true;
+            };
+
+            Time Complexity : O(n2) cause time complexity of indexOf is O(n)
+            Space Complexity: O(1)
+    </code>
+</pre>
