@@ -1,0 +1,88 @@
+<h2>Word Pattern</h2>
+<pre>
+    <code>
+        Given a pattern and a string s, find if s follows the same pattern.
+
+        Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in s. Specifically:
+
+        Each letter in pattern maps to exactly one unique word in s.
+        Each unique word in s maps to exactly one letter in pattern.
+        No two letters map to the same word, and no two words map to the same letter.
+        
+
+        Example 1:
+        -----------
+
+        Input: pattern = "abba", s = "dog cat cat dog"
+
+        Output: true
+
+        Explanation:
+
+        The bijection can be established as:
+
+        'a' maps to "dog".
+        'b' maps to "cat".
+
+
+        Example 2:
+        -----------
+
+        Input: pattern = "abba", s = "dog cat cat fish"
+
+        Output: false
+
+        Example 3:
+        -----------
+
+        Input: pattern = "aaaa", s = "dog cat cat dog"
+
+        Output: false
+    </code>
+    <code>
+        /**
+ * @param {string} pattern
+ * @param {string} s
+ * @return {boolean}
+ */
+var wordPattern = function(pattern, s) {
+        let sArray = s.split(' ');
+        if (pattern.length !== sArray.length) {
+        return false;
+        }
+        let patternMap = new Map();
+        let sMap = new Map();
+        for (let i = 0; i < pattern.length; i++) {
+        if (!patternMap.has(pattern[i]) && !sMap.has(sArray[i])) {
+            patternMap.set(pattern[i], sArray[i]);
+            sMap.set(sArray[i], pattern[i])
+        } else {
+            if (patternMap.get(pattern[i]) !== sArray[i] || sMap.get(sArray[i]) !== pattern[i]) {
+            return false;
+            }
+        }
+        }
+        return true;
+};
+    </code>
+
+    <code>
+        ✅ Time Complexity: O(n)
+        You iterate once through the pattern and sArray, which are both of length n.
+
+        Map operations (get, set, has) are O(1) on average.
+
+        So total time is O(n).
+
+        ⚠️ Space Complexity: O(n) (not O(1))
+        You’re storing mappings in two Map objects:
+
+        patternMap: up to n entries.
+
+        sMap: up to n entries.
+
+        In the worst case (no repeats), you store up to n mappings.
+
+        So, space complexity is O(n).
+    </code>
+</pre>
