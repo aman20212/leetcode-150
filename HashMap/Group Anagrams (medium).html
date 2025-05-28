@@ -1,0 +1,92 @@
+<pre>
+    <code>
+        Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+
+        Example 1:
+        ----------
+
+        Input: strs = ["eat","tea","tan","ate","nat","bat"]
+
+        Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+        Explanation:
+        ------------
+
+        There is no string in strs that can be rearranged to form "bat".
+        The strings "nat" and "tan" are anagrams as they can be rearranged to form each other.
+        The strings "ate", "eat", and "tea" are anagrams as they can be rearranged to form each other.
+
+        Example 2:
+        ----------
+
+        Input: strs = [""]
+
+        Output: [[""]]
+    </code>
+
+    <code style="color: red; font-weight: 600">
+        /**
+        * @param {string[]} strs
+        * @return {string[][]}
+        */
+
+        var groupAnagrams = function(strs) {
+            if (strs.length === 0) return [[]];
+            const checkAnagram = function(s) {
+            let charArray = s.split('').sort().join('');
+            return charArray;
+            }
+            
+            let s = new Map();
+            let n  = 0;
+            while (n < strs.length) {
+            let key = checkAnagram(strs[n]);
+            if (!s.has(key)) {
+                s.set(key, []);
+            }
+            s.get(key).push(strs[n]);
+            n++;
+            }
+            return Array.from(s.values());;
+        };
+    </code>
+
+    <code>
+        Time Complexity: O(n * k log k):
+        --------------------------------
+        1. Loop through strs (length = n): Runs n times.
+        2. For each string, create a sorted key:
+        Splitting: O(k)
+        Sorting: O(k log k)
+        Joining: O(k)
+        Where k = average length of the strings
+        ✅ So the checkAnagram() function takes O(k log k) time per string.
+        🔁 Overall Time:
+        We do this for n strings:
+
+        Total Time: O(n * k log k)
+
+
+
+        Space Complexity: O(n * k)
+        ---------------------------
+        1. Map s
+            Stores up to n entries in the worst case (if no anagrams).
+
+            Each key is a string of length k.
+
+            Each value is an array containing one or more of the original strings.
+
+            ✅ Space for the map: O(n * k)
+
+            2. Sorted keys:
+            You create a new sorted key for each string — total of n strings, each of length k → temporary 
+            space per sort is O(k), reused each time.
+
+            ✅ Total Space Complexity: O(n * k)
+
+        n = number of strings in the input array
+
+        k = average length of each string
+    </code>
+</pre>
