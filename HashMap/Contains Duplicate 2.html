@@ -1,0 +1,124 @@
+<h2>Contains Duplicate</h2>
+<pre>
+    <code>
+        Given an integer array nums and an integer k, return true if there are two distinct indices i and j in 
+        the array such that nums[i] == nums[j] and abs(i - j) <= k.
+
+        Example 1:
+        ----------
+
+        Input: nums = [1,2,3,1], k = 3
+        Output: true
+
+
+        Example 2:
+        ----------
+
+        Input: nums = [1,0,1,1], k = 1
+        Output: true
+
+        Example 3:
+        ----------
+
+        Input: nums = [1,2,3,1,2,3], k = 2
+        Output: false
+    </code>
+</pre>
+<h4>Solution 1: Using Map</h4>
+<pre>
+    <code style="color: red; font-weight:600">
+        var containsNearbyDuplicate = function(nums, k) {
+            let a = new Map();
+            let n = 0;
+            while (n < nums.length) {
+              if (!a.has(nums[n])) {
+                a.set(nums[n],n);
+              }
+              else if (Math.abs(a.get(nums[n]) - n) <= k) {
+                return true;
+              } else {
+                 a.set(nums[n],n);
+              }
+              n++;
+            }
+            return false;
+        };
+
+        ⏱ Time Complexity:
+        --------------------
+            O(n) — You iterate through the array once (while (n < nums.length)), and each Map operation (get, set, has) is O(1) on average.
+
+        🧠 Space Complexity:
+        ---------------------
+            O(n) — In the worst case (no duplicates), you store all n elements in the map.
+
+
+    </code>
+
+    <code style="color: blue; font-weight:700">
+        Sliding Window Approach Explanation (with Example)
+
+        Instead of storing all past indices, we only keep the last k elements in a Set. 
+        As we move forward, we slide the window (remove the oldest element) so that we only keep k elements at a time.
+
+        Step-by-step:
+        ------------
+        i	nums[i]	Set	Action
+        0	1	{}	Add 1
+        1	2	{1}	Add 2
+        2	3	{1, 2}	Add 3
+        3	1	{1, 2, 3}	1 is already in Set → ✅ return true
+
+        💡 Why remove old elements?
+        Once we are beyond k distance, any earlier elements can no longer satisfy abs(i - j) <= k, so we remove them.
+
+        var containsNearbyDuplicate = function(nums, k) {
+            const set = new Set();
+            for (let i = 0; i < nums.length; i++) {
+                if (set.has(nums[i])) return true;
+                set.add(nums[i]);
+                if (set.size > k) {
+                    set.delete(nums[i - k]);
+                }
+            }
+            return false;
+        };
+        
+        
+        Sliding Window Time & Space Complexity:
+        Time: O(n) → One pass through nums, constant-time Set operations.
+
+        Space: O(k) → At most k elements in the Set at any time.
+
+
+        nums = [1, 2, 3, 4, 1], k = 3
+
+        Step-by-step:
+        -------------
+        i	nums[i]	Set (last k values)	Action
+        0	1	{}	Add 1
+        1	2	{1}	Add 2
+        2	3	{1, 2}	Add 3
+        3	4	{1, 2, 3}	Add 4. Set is now size 4 → remove nums[0] = 1
+        4	1	{2, 3, 4}	1 is not in Set, so add 1
+
+        ❌ Why don’t we return true at i = 4?
+        Even though nums[0] == nums[4], the distance is abs(4 - 0) = 4 > k, so it doesn’t meet the condition.
+
+        👉 So we remove nums[i - k] (i.e., nums[1] when i = 4) to ensure we only keep the last k elements in the window.
+
+        Because any number at index j < i - k can never satisfy abs(i - j) <= k, it's impossible for 
+        such a number to be a valid match. Keeping it in the Set would just waste space and lead to false positives.
+
+        So, we "slide" the window forward by removing the number that just exited the window.
+
+        Visual of Window Movement:
+        --------------------------
+        i = 0 → [1]
+        i = 1 → [1, 2]
+        i = 2 → [1, 2, 3]
+        i = 3 → [2, 3, 4]   // removed 1 (too old)
+        i = 4 → [3, 4, 1]   // removed 2 (too old)
+        This ensures we’re only checking for duplicates within a k-sized window at any time.
+    </code>
+</pre>
