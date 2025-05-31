@@ -1,0 +1,134 @@
+import React from "react";
+import { useState, useEffect, useMemo } from "react";
+
+const sampleData = Array.from({ length: 50 }, (_, i) => ({
+  id: i + 1,
+  name: `Item ${i + 1}`,
+  value: Math.floor(Math.random() * 100),
+}));
+
+export function App(props) {
+  const [data, setData] = useState(sampleData);
+  const [search, setSearch] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Debounced Search
+  useEffect(() => {
+    const timeoutID = setTimeout(() => {
+      const filteredData = data.filter((item) => {
+        return item.name.toLowerCase().includes(search.toLowerCase());
+      });
+      setData(filteredData);
+      setCurrentPage(1);
+    }, 3000);
+    return () => clearTimeout(timeoutID);
+  }, [search]);
+
+  const sortedData = useMemo(() => {
+    if (!sortConfig?.key) return data;
+    return [...data].sort((a, b) => {
+      if (a[sortConfig?.key] < b[sortConfig?.key])
+        return sortConfig?.direction === "asc" ? "-1" : "1";
+      if (a[sortConfig?.key] < b[sortConfig?.key])
+        return sortConfig?.direction === "asc" ? "1" : "-1";
+      return 0;
+    });
+  }, [sortConfig, data]);
+
+  const paginatedData = sortedData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleSort = (key) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  return (
+    <div className="App">
+      <h1>Hello React.</h1>
+      <h2>Start editing to see some magic happen!</h2>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      <div>
+        <h2> Dynamic Table Example</h2>
+        <table
+          border={"1"}
+          cellPadding={"10"}
+          style={{ borderCollapse: "collapse", width: "100%" }}
+        >
+          <thead>
+            <tr>
+              <th onClick={() => handleSort("id")}>
+                ID
+                {sortConfig?.key === "id"
+                  ? sortConfig?.direction === "asc"
+                    ? "\u2191"
+                    : "\u2193"
+                  : ""}
+              </th>
+              <th onClick={() => handleSort("name")}>
+                NAME
+                {sortConfig?.key === "name"
+                  ? sortConfig?.direction === "asc"
+                    ? "\u2191"
+                    : "\u2193"
+                  : ""}
+              </th>
+              <th onClick={() => handleSort("value")}>
+                VALUE
+                {sortConfig?.key === "value"
+                  ? sortConfig?.direction === "asc"
+                    ? "\u2191"
+                    : "\u2193"
+                  : ""}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.map((item) => {
+              return (
+                <tr key={item?.id}>
+                  <td>{item?.id}</td>
+                  <td>{item?.name}</td>
+                  <td>{item?.value}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <button
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
+        <span>Page {currentPage} </span>
+        <button
+          onClick={() =>
+            setCurrentPage((p) =>
+              p * itemsPerPage < sortedData.length ? p + 1 : p
+            )
+          }
+          disabled={currentPage * itemsPerPage >= sortedData.length}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Log to console
+console.log("Hello console");
