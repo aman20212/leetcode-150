@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 const sampleData = Array.from({ length: 50 }, (_, i) => ({
   id: i + 1,
@@ -7,32 +6,38 @@ const sampleData = Array.from({ length: 50 }, (_, i) => ({
   value: Math.floor(Math.random() * 100),
 }));
 
-export function App(props) {
+export function App() {
+  const [originalData] = useState(sampleData);
   const [data, setData] = useState(sampleData);
   const [search, setSearch] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Debounced Search
+  // ✅ Debounced Search (500ms)
   useEffect(() => {
     const timeoutID = setTimeout(() => {
-      const filteredData = data.filter((item) => {
-        return item.name.toLowerCase().includes(search.toLowerCase());
-      });
+      const filteredData = originalData.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase())
+      );
       setData(filteredData);
       setCurrentPage(1);
-    }, 3000);
-    return () => clearTimeout(timeoutID);
-  }, [search]);
+    }, 500);
 
+    return () => clearTimeout(timeoutID);
+  }, [search, originalData]);
+
+  // ✅ Sorting logic
   const sortedData = useMemo(() => {
     if (!sortConfig?.key) return data;
+
     return [...data].sort((a, b) => {
-      if (a[sortConfig?.key] < b[sortConfig?.key])
-        return sortConfig?.direction === "asc" ? "-1" : "1";
-      if (a[sortConfig?.key] < b[sortConfig?.key])
-        return sortConfig?.direction === "asc" ? "1" : "-1";
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === "asc" ? 1 : -1;
+      }
       return 0;
     });
   }, [sortConfig, data]);
@@ -52,7 +57,6 @@ export function App(props) {
   return (
     <div className="App">
       <h1>Hello React.</h1>
-      <h2>Start editing to see some magic happen!</h2>
       <input
         type="text"
         placeholder="Search..."
@@ -60,61 +64,50 @@ export function App(props) {
         onChange={(e) => setSearch(e.target.value)}
       />
       <div>
-        <h2> Dynamic Table Example</h2>
+        <h2>Dynamic Table Example</h2>
         <table
-          border={"1"}
-          cellPadding={"10"}
+          border="1"
+          cellPadding="10"
           style={{ borderCollapse: "collapse", width: "100%" }}
         >
           <thead>
             <tr>
               <th onClick={() => handleSort("id")}>
-                ID
-                {sortConfig?.key === "id"
-                  ? sortConfig?.direction === "asc"
-                    ? "\u2191"
-                    : "\u2193"
-                  : ""}
+                ID{" "}
+                {sortConfig.key === "id" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
               <th onClick={() => handleSort("name")}>
-                NAME
-                {sortConfig?.key === "name"
-                  ? sortConfig?.direction === "asc"
-                    ? "\u2191"
-                    : "\u2193"
-                  : ""}
+                NAME{" "}
+                {sortConfig.key === "name" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
               <th onClick={() => handleSort("value")}>
-                VALUE
-                {sortConfig?.key === "value"
-                  ? sortConfig?.direction === "asc"
-                    ? "\u2191"
-                    : "\u2193"
-                  : ""}
+                VALUE{" "}
+                {sortConfig.key === "value" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map((item) => {
-              return (
-                <tr key={item?.id}>
-                  <td>{item?.id}</td>
-                  <td>{item?.name}</td>
-                  <td>{item?.value}</td>
-                </tr>
-              );
-            })}
+            {paginatedData.map((item) => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.name}</td>
+                <td>{item.value}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      <div>
+      <div style={{ marginTop: "1rem" }}>
         <button
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
           disabled={currentPage === 1}
         >
           Prev
         </button>
-        <span>Page {currentPage} </span>
+        <span style={{ margin: "0 1rem" }}>Page {currentPage}</span>
         <button
           onClick={() =>
             setCurrentPage((p) =>
@@ -129,6 +122,3 @@ export function App(props) {
     </div>
   );
 }
-
-// Log to console
-console.log("Hello console");
