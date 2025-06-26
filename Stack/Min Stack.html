@@ -1,0 +1,75 @@
+<h3>Min Stack</h3>
+<pre>
+    <code style="color: red; font-weight:400">
+        Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+        Implement the MinStack class:
+
+        MinStack() initializes the stack object.
+
+        void push(int val) pushes the element val onto the stack.
+
+        void pop() removes the element on the top of the stack.
+
+        int top() gets the top element of the stack.
+
+        int getMin() retrieves the minimum element in the stack.
+
+        You must implement a solution with O(1) time complexity for each function.
+
+        
+
+        Example 1:
+
+        Input:
+        ["MinStack","push","push","push","getMin","pop","top","getMin"]
+        [[],[-2],[0],[-3],[],[],[],[]]
+
+        Output:
+        [null,null,null,null,-3,null,0,-2]
+
+        Explanation:
+        MinStack minStack = new MinStack();
+        minStack.push(-2);
+        minStack.push(0);
+        minStack.push(-3);
+        minStack.getMin(); // return -3
+        minStack.pop();
+        minStack.top();    // return 0
+        minStack.getMin(); // return -2
+    </code>
+    <code style="color: blue;font-weight:400">
+        class MinStack {
+            
+            constructor() {
+                this.stack = [];    // main stack
+                this.minStack = []; // stack to track minimum values
+            }
+
+            push(val) {
+                this.stack.push(val);
+                // If minStack is empty, or val is smaller or equal to current min, push it to minStack
+                if (this.minStack.length === 0 || val <= this.getMin()) {
+                this.minStack.push(val);
+                }
+            }
+
+            pop() {
+                const popped = this.stack.pop();
+                // If the popped value is the same as the current min, pop it from minStack as well
+                if (popped === this.getMin()) {
+                this.minStack.pop();
+                }
+            }
+
+            top() {
+                return this.stack[this.stack.length - 1];
+            }
+
+            getMin() {
+                return this.minStack[this.minStack.length - 1];
+            }
+        }
+
+    </code>
+</pre>
